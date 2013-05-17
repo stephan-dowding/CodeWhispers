@@ -10,9 +10,10 @@ exports.list = (req, res) ->
 exports.swap = (req, res) ->
   swapper.getBranchList (branches) ->
     targetBranches = randomiser.randomise branches
-    res.render 'branchMapping',
-      title: "Chinese Whispers"
-      branchMapping: entangle branches, targetBranches
+    swapper.swapBranches branches, targetBranches, ->
+      res.render 'branchMapping',
+        title: "Chinese Whispers"
+        branchMapping: entangle branches, targetBranches
 
 entangle = (origin, destination) ->
   map = []

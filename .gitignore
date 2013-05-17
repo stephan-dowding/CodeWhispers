@@ -1,3 +1,4 @@
 git-repo/
-swapper/git-master/
+git-master/
 .DS_Store
+node_modules/

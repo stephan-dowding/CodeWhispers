@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1 Branches Swapped
+
+  table
+    tr
+      th origin
+      th destination
+    each mapping in branchMapping
+      tr
+        td=mapping.origin
+        td=mapping.destination
+

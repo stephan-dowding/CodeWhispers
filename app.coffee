@@ -6,6 +6,7 @@
 express = require 'express'
 routes = require './routes'
 branch = require './routes/branch'
+challenge = require './routes/challenge'
 http = require 'http'
 path = require 'path'
 
@@ -29,6 +30,8 @@ if 'development' == app.get('env')
 app.get '/', routes.index
 app.get '/branches', branch.list
 app.get '/branches/swap', branch.swap
+
+app.get '/challenge/question/:team', challenge.question
 
 http.createServer(app).listen app.get('port'), ->
   console.log 'Express server listening on port ' + app.get('port')

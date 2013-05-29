@@ -33,6 +33,7 @@ app.get '/details', branch.getDetails
 app.get '/branches/swap', branch.swap
 
 app.get '/challenge/question/:team', challenge.question
+app.post '/challenge/answer/:team', challenge.answer
 
 http.createServer(app).listen app.get('port'), ->
   console.log 'Express server listening on port ' + app.get('port')

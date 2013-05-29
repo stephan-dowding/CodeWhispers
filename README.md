@@ -52,3 +52,10 @@ git pull
 git reset --hard origin/one
 
 [[same for two]]
+
+
+SETUP for git repo
+In bare host repo add magic "git-daemon-export-ok" file
+run git daemon (we don't care about authenticated checkins so this is ok)
+  git daemon --enable=receive-pack --interpolated-path=[path to repo]
+git clone git://[host]/ cloneName    <-- to clone

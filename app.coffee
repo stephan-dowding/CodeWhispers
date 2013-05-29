@@ -29,6 +29,7 @@ if 'development' == app.get('env')
 
 app.get '/', routes.index
 app.get '/branches', branch.list
+app.get '/details', branch.getDetails
 app.get '/branches/swap', branch.swap
 
 app.get '/challenge/question/:team', challenge.question

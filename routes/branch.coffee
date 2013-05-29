@@ -7,6 +7,11 @@ exports.list = (req, res) ->
       title: "Chinese Whispers"
       branches: branches
 
+exports.getDetails = (req, res) ->
+  swapper.getBranchList (branches) ->
+    res.send
+      branches: branches
+
 exports.swap = (req, res) ->
   swapper.getBranchList (branches) ->
     targetBranches = randomiser.randomise branches

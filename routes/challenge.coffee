@@ -33,16 +33,36 @@ exports.answer = (req, res) ->
 
       collection = new mongo.Collection client, 'challenge'
       collection.findOne {team: team}, (err, doc) ->
-        client.close()
         if err
+          client.close()
           res.send(500, err)
         else
           console.log doc
           console.log req.body
-          if correct(req.body, doc.answer, round)
-            res.send(200, "OK")
-          else
-            res.send(418, "D'oh!")
+          gotItRight = correct(req.body, doc.answer, round)
+          setResult client, res, round, team, gotItRight, ->
+            client.close()
+            if gotItRight
+              res.send(200, "OK")
+            else
+              res.send(418, "D'oh!")
+
+setResult = (client, res, round, team, gotItRight, callback) ->
+  collection = new mongo.Collection client, 'branches'
+  collection.findOne {name: team}, (err, doc) ->
+    if err
+      client.close()
+      res.send(500, err)
+    else if doc
+      doc[round] = gotItRight
+      collection.save doc, {sfe:true}, (err, objects) ->
+        if err
+          client.close()
+          res.send(500, err)
+        else
+          callback()
+    else
+      callback()
 
 correct = (reqBody, answer, round) ->
   checkEnd(reqBody, answer) if round == 0  || round == 1

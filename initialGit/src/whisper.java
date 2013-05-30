@@ -14,42 +14,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class whisper {
+    private static String branch = branchFinder.Finder.findBranch();
+    private static HttpClient httpClient = new DefaultHttpClient();
+
     public static void main(String[] args)
     {
-        String branch = branchFinder.Finder.findBranch();
-        HttpClient httpClient = new DefaultHttpClient();
-
         try {
-            HttpGet get = new HttpGet("http://localhost:3000/challenge/question/" + branch);
-            HttpResponse getResponse = httpClient.execute(get);
+            JsonObject element = getQuestion();
 
-            if (getResponse.getStatusLine().getStatusCode() != 200)
-                throw new Exception("Failed getting question :(");
+            int start = element.get("start").getAsInt();
 
-            JsonParser parser = new JsonParser();
-            JsonObject element = parser.parse(new InputStreamReader(getResponse.getEntity().getContent())).getAsJsonObject();
+            int end = start;
 
-            int s = element.get("start").getAsInt();
-            String i = element.get("instructions").getAsString();
-
-            int answer = s + i.length();
-
-            HttpPost request = new HttpPost("http://localhost:3000/challenge/answer/" + branch);
-            List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-            params.add(new BasicNameValuePair("end", String.valueOf(answer)));
-            request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-            HttpResponse postResponse = httpClient.execute(request);
-
-            if (postResponse.getStatusLine().getStatusCode() != 200)
-                throw new Exception("Got question wrong :(");
+            postAnswer(end);
 
 
             System.out.println("Yipeeee! =D");
-            // handle response here...
+
         }catch (Exception ex) {
             System.out.println(ex);
         } finally {
             httpClient.getConnectionManager().shutdown();
         }
+    }
+
+    private static JsonObject getQuestion() throws Exception {
+        HttpGet get = new HttpGet("http://localhost:3000/challenge/question/" + branch);
+        HttpResponse getResponse = httpClient.execute(get);
+
+        if (getResponse.getStatusLine().getStatusCode() != 200)
+            throw new Exception("Failed getting question :(");
+
+        JsonParser parser = new JsonParser();
+        return parser.parse(new InputStreamReader(getResponse.getEntity().getContent())).getAsJsonObject();
+    }
+
+    private static void postAnswer(int end) throws Exception {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+        params.add(new BasicNameValuePair("end", String.valueOf(end)));
+
+        HttpPost request = new HttpPost("http://localhost:3000/challenge/answer/" + branch);
+        request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+        HttpResponse postResponse = httpClient.execute(request);
+
+        if (postResponse.getStatusLine().getStatusCode() != 200)
+            throw new Exception("Got question wrong :(");
     }
 }

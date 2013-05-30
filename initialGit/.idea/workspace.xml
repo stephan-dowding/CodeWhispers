@@ -4,7 +4,7 @@
     <list default="true" id="68158194-4174-4f45-86ec-3867ecbcd8d5" name="Default" comment="" />
     <ignored path="initialGit.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/whisper.java" changelist="68158194-4174-4f45-86ec-3867ecbcd8d5" time="1369912309526" ignored="false" />
+    <file path="/whisper.java" changelist="68158194-4174-4f45-86ec-3867ecbcd8d5" time="1369947254507" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,9 +68,10 @@
       <file leaf-file-name="whisper.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/whisper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="74" selection-start="1607" selection-end="1613" vertical-scroll-proportion="0.6977153">
+            <state line="62" column="5" selection-start="2202" selection-end="2202" vertical-scroll-proportion="1.6344464">
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1752#1767#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -318,7 +319,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="10" y="29" width="1660" height="1010" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -413,15 +414,17 @@
         <state line="25" column="67" selection-start="960" selection-end="960" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1752#1767#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/whisper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="74" selection-start="1607" selection-end="1613" vertical-scroll-proportion="0.6977153">
+        <state line="62" column="5" selection-start="2202" selection-end="2202" vertical-scroll-proportion="1.6344464">
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1752#1767#0" expanded="true" />
           </folding>
         </state>
       </provider>

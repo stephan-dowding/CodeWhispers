@@ -1,7 +1,7 @@
 package branchFinder;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 public class Finder {
     public static void main(String[] args){
@@ -9,21 +9,14 @@ public class Finder {
     }
 
     public static String findBranch(){
-        String branch = null;
         try {
-            Process process = new ProcessBuilder("git", "branch").start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while((line = reader.readLine()) != null){
-                if (line.startsWith("* ")){
-                    branch = line.substring(2);
-                }
-            }
-
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            Repository repository = builder.findGitDir().build();
+            return repository.getBranch();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
+            return null;
         }
-        return branch;
     }
 }

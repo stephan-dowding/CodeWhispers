@@ -4,14 +4,26 @@
 
   getDetails = function() {
     return $.getJSON('/details', function(data) {
-      var item, list, _i, _len, _ref;
+      var header, i, item, row, table, value, _i, _j, _k, _len, _ref, _ref1, _ref2;
 
-      list = $('.branches');
-      list.children().remove();
-      _ref = data.branches;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        item = _ref[_i];
-        list.append("<li>" + item + "</li>");
+      table = $('.branches');
+      table.children().remove();
+      header = $("<tr>");
+      header.append("<th>Teams</th>");
+      for (i = _i = 0, _ref = data.round; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        header.append("<th>" + i + "</th>");
+      }
+      table.append(header);
+      _ref1 = data.branches;
+      for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
+        item = _ref1[_j];
+        row = $("<tr>");
+        row.append("<td>" + item.name + "</td>");
+        for (i = _k = 0, _ref2 = data.round; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+          value = item[i] ? "tick" : "cross";
+          row.append("<td><img src='/images/" + value + ".png' height='25' width='25' /></td>");
+        }
+        table.append(row);
       }
       return $('.roundNumber').text(data.round);
     });

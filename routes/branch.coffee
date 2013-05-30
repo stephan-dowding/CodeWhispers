@@ -64,7 +64,7 @@ getBranches = (client, res, callback) ->
       client.close()
       res.send(500, err)
     else if doc
-      branches.push doc.name
+      branches.push doc
     else
       callback(branches)
 

@@ -11,14 +11,14 @@ if "%2" == "" goto doit
 
 
 :doit
-  #clean output dir
-  DELTREE ./out
-  MD ./out
+  echo "clean output dir"
+  RD /S /Q out
+  MD out
 
-  #compile
+  rem "compile"
   echo "Compiling classes to out folder"
-  javac -classpath .\lib\"*" -d out -sourcepath ./src ./src/*.java
+  javac -classpath lib/"*" -d out src/*
 
-  #run
-  echo "Running the app using question server $1"
-  java -classpath .\lib\"*":./out Whisper $1
+  rem "run"
+  echo "Running the app using question server %1"
+  java -classpath lib/"*";out Whisper %1

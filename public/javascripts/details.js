@@ -4,17 +4,16 @@
 
   getDetails = function() {
     return $.getJSON('/details', function(data) {
-      var item, list, _i, _len, _ref, _results;
+      var item, list, _i, _len, _ref;
 
       list = $('.branches');
       list.children().remove();
       _ref = data.branches;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         item = _ref[_i];
-        _results.push(list.append("<li>" + item + "</li>"));
+        list.append("<li>" + item + "</li>");
       }
-      return _results;
+      return $('.roundNumber').text(data.round);
     });
   };
 

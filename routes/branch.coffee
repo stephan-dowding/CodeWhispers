@@ -1,6 +1,11 @@
 swapper = require "../swapper/swapper"
 randomiser = require "../swapper/listRandomiser"
 
+mongo = require 'mongodb'
+connection = require './connection'
+
+round = require './round'
+
 exports.list = (req, res) ->
   swapper.getBranchList (branches) ->
     res.render 'branches',
@@ -9,8 +14,19 @@ exports.list = (req, res) ->
 
 exports.getDetails = (req, res) ->
   swapper.getBranchList (branches) ->
-    res.send
-      branches: branches
+    connection.open (error, client) ->
+      if error
+        client.close()
+        res.send(500, error)
+      else
+        round.getRound client, (err, round) ->
+          client.close()
+          if err
+            res.send(500, error)
+          else
+            res.send
+              round: round
+              branches: branches
 
 exports.swap = (req, res) ->
   swapper.getBranchList (branches) ->

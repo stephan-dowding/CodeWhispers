@@ -7,6 +7,7 @@ express = require 'express'
 routes = require './routes'
 branch = require './routes/branch'
 challenge = require './routes/challenge'
+round = require './routes/round'
 http = require 'http'
 path = require 'path'
 
@@ -31,6 +32,7 @@ app.get '/', routes.index
 app.get '/branches', branch.list
 app.get '/details', branch.getDetails
 app.get '/branches/swap', branch.swap
+app.get '/round/:number', round.set
 
 app.get '/challenge/question/:team', challenge.question
 app.post '/challenge/answer/:team', challenge.answer

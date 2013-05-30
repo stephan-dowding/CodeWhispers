@@ -4,6 +4,7 @@ getDetails = ->
     list.children().remove()
     for item in data.branches
       list.append "<li>#{item}</li>"
+    $('.roundNumber').text data.round
 
 $ ->
   getDetails()

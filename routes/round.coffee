@@ -25,10 +25,11 @@ exports.set = (req, res) ->
               else
                 res.send(200, "Round: #{number}")
 
-exports.getRound = (client, callback) ->
+exports.getRound = (client, res, callback) ->
   round = new mongo.Collection client, 'round'
   round.findOne {}, (err, doc) ->
     if err
-      callback err
+      client.close()
+      res.send 500, err
     else
-      callback null, doc.round
+      callback doc.round

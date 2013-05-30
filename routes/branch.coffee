@@ -19,14 +19,11 @@ exports.getDetails = (req, res) ->
         client.close()
         res.send(500, error)
       else
-        round.getRound client, (err, round) ->
+        round.getRound client, res, (round) ->
           client.close()
-          if err
-            res.send(500, error)
-          else
-            res.send
-              round: round
-              branches: branches
+          res.send
+            round: round
+            branches: branches
 
 exports.swap = (req, res) ->
   swapper.getBranchList (branches) ->

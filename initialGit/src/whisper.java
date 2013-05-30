@@ -29,14 +29,14 @@ public class whisper {
             JsonParser parser = new JsonParser();
             JsonObject element = parser.parse(new InputStreamReader(getResponse.getEntity().getContent())).getAsJsonObject();
 
-            int s = element.get("s").getAsInt();
-            String i = element.get("i").getAsString();
+            int s = element.get("start").getAsInt();
+            String i = element.get("instructions").getAsString();
 
             int answer = s + i.length();
 
             HttpPost request = new HttpPost("http://localhost:3000/challenge/answer/" + branch);
             List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-            params.add(new BasicNameValuePair("answer", String.valueOf(answer)));
+            params.add(new BasicNameValuePair("end", String.valueOf(answer)));
             request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             HttpResponse postResponse = httpClient.execute(request);
 

@@ -19,16 +19,12 @@ exports.getDetails = (req, res) ->
       res.send(500, error)
     else
       round.getRound client, res, (round) ->
-        if round == 0
-          syncBranches res, client, ->
-            sendBranchList client, res, round
-        else
-          sendBranchList client, res, round
-
-syncBranches = (res, client, callback) ->
-  swapper.getBranchList (branches) ->
-    ensureExists res, client, branches, ->
-      callback()
+        swapper.getBranchList (branches) ->
+          if round == 0
+            ensureExists res, client, branches, ->
+              sendBranchList client, res, round, branches
+          else
+            sendBranchList client, res, round, branches
 
 ensureExists = (res, client, branches, callback) ->
   if branches.length == 0
@@ -49,12 +45,18 @@ ensureExists = (res, client, branches, callback) ->
           else
             ensureExists res, client, branches.slice(1), callback
 
-sendBranchList = (client, res, round) ->
-  getBranches client, res, (branches) ->
-    client.close()
-    res.send
-      round: round
-      branches: branches
+sendBranchList = (client, res, round, rawBranches) ->
+  collection = new mongo.Collection client, 'branches'
+  collection.remove {name: {$nin: rawBranches}}, {safe:true}, (err, doc) ->
+    if err
+      client.close()
+      res.send(500, err)
+    else
+      getBranches client, res, (branches) ->
+        client.close()
+        res.send
+          round: round
+          branches: branches
 
 getBranches = (client, res, callback) ->
   branches = []

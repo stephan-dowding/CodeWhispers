@@ -5,6 +5,7 @@ connection = new mongo.Db 'ChineseWhispers', server, {w: 1}
 dbClient = {}
 connection.open (error, client) ->
   if error
+    console.log error
     process.exit 1
   else
     dbClient = client

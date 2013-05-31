@@ -4,7 +4,7 @@
 ##
 
 express = require 'express'
-routes = require './routes'
+routes = require './routes/index'
 branch = require './routes/branch'
 challenge = require './routes/challenge'
 round = require './routes/round'
@@ -29,6 +29,7 @@ if 'development' == app.get('env')
   app.use express.errorHandler()
 
 app.get '/', routes.index
+app.get '/setup', routes.setup
 app.get '/branches', branch.list
 app.get '/details', branch.getDetails
 app.get '/branches/swap', branch.swap

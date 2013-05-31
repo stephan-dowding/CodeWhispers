@@ -65,14 +65,16 @@ setResult = (client, res, round, team, gotItRight, callback) ->
       callback()
 
 correct = (reqBody, answer, round) ->
-  return checkEnd(reqBody, answer) if round == 0  || round == 1
+  return checkEnd(reqBody, answer) if round == 0 || round == 1
   return checkEndCoordinate(reqBody, answer) if round == 2
   return checkEndCoordinateWithTreasureFound(reqBody, answer) if round ==3
-
-  return checkAnswer4(reqBody, answer) if round == 4
+  return checkEndCoordinateWithTreasureFoundAndStolen(reqBody, answer) if round == 4 || round == 5
 
 checkEnd = (reqBody, answer) ->
-  return reqBody['end'] == answer.end.toString()
+  try
+    return parseInt(reqBody['end'], 10) == answer.end
+  catch e
+    return false
 
 checkEndCoordinate = (reqBody, answer) ->
   try
@@ -80,13 +82,10 @@ checkEndCoordinate = (reqBody, answer) ->
   catch e
     return false
 
-  return reqBody['endX'] == answer.endX.toString() and reqBody['endY'] == answer.endY.toString()
-
-
 checkEndCoordinateWithTreasureFound = (reqBody, answer) ->
   return checkEndCoordinate(reqBody, answer) and reqBody['treasureFound'] == answer.treasureFound.toString()
 
-checkAnswer4 = (reqBody, answer) ->
+checkEndCoordinateWithTreasureFoundAndStolen = (reqBody, answer) ->
   return false unless checkEndCoordinateWithTreasureFound(reqBody, answer)
   return reqBody['treasureStolen'] == answer.treasureStolen.toString()
 
@@ -96,6 +95,7 @@ generateQandA = (round) ->
   return question2() if round == 2
   return question3() if round == 3
   return question4() if round == 4
+  return question5() if round == 5
 
 question0 = ->
   number = Math.floor(Math.random() * 10)
@@ -125,7 +125,7 @@ question2 = ->
   question:
     startX: startX
     startY: startY
-    instructions: instructions.toString()
+    instructions: instructions.join ''
   answer:
     endX: endPosition[0]
     endY: endPosition[1]
@@ -145,9 +145,14 @@ calculateEndPosition = (instructions, startingCoordinate) ->
     else if (y == 'F') then [x[0] + 1, x[1]]
     else [x[0] - 1, x[1]]), startingCoordinate
 
-question3 = ->
-  startX = Math.floor(Math.random() * 20) + 10
-  startY = Math.floor(Math.random() * 20) + 10
+question3 = (startingCoordinate)->
+  if startingCoordinate
+    startX = startingCoordinate[0]
+    startY = startingCoordinate[1]
+  else
+    startX = Math.floor(Math.random() * 20) + 10
+    startY = Math.floor(Math.random() * 20) + 10
+
   instructions = getInstructions(Math.floor(Math.random() * 10) + 10)
   shouldFindTreasure = Math.floor(Math.random() * 2) == 1
 
@@ -159,7 +164,7 @@ question3 = ->
     startY: startY
     treasureX: treasureCoordinate[0]
     treasureY: treasureCoordinate[1]
-    instructions: instructions.toString()
+    instructions: instructions.join ''
   answer:
     endX: endPosition[0]
     endY: endPosition[1]
@@ -175,8 +180,8 @@ calculateTreasureCoordinate = (instructions, shouldFindTreasure, startingCoordin
     return [treasureX, treasureY]
 
 
-question4 = ->
-  challenge = question3()
+question4 = (startingCoordinate)->
+  challenge = question3(startingCoordinate)
   muggerFound = Math.floor(Math.random() * 2) == 1
 
   if muggerFound
@@ -188,8 +193,32 @@ question4 = ->
 
   furtherMoves = getInstructions(Math.floor(Math.random() * 4) + 3)
   newEnd = calculateEndPosition furtherMoves, [challenge.answer.endX, challenge.answer.endY]
-  challenge.question.instructions += furtherMoves
+  challenge.question.instructions += furtherMoves.join ''
   challenge.answer.endX = newEnd[0]
   challenge.answer.endY = newEnd[1]
   challenge.answer.treasureStolen = muggerFound && challenge.answer.treasureFound
+  challenge
+
+question5 = ->
+  initialMoves = getInstructions(Math.floor(Math.random() * 4) + 3)
+  spyFound = Math.floor(Math.random() * 2) == 1
+
+  startX = Math.floor(Math.random() * 20) + 10
+  startY = Math.floor(Math.random() * 20) + 10
+
+  spyCoord = calculateEndPosition initialMoves, [startX, startY]
+
+  challenge = question4(spyCoord)
+  challenge.question.instructions = initialMoves.join('') + challenge.question.instructions
+  challenge.question.startX = startX
+  challenge.question.startY = startY
+
+  if spyFound
+    challenge.question.spyX = spyCoord[0]
+    challenge.question.spyY = spyCoord[1]
+  else
+    challenge.question.spyX = spyCoord[0] + 30
+    challenge.question.spyY = spyCoord[1] + 30
+
+  challenge.answer.treasureStolen = challenge.answer.treasureFound && !challenge.answer.treasureStolen && spyFound
   challenge

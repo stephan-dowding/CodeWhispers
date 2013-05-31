@@ -141,7 +141,7 @@ question3 = ->
   startX = Math.floor(Math.random() * 20) + 10
   startY = Math.floor(Math.random() * 20) + 10
   instructions = getInstructions(Math.floor(Math.random() * 10) + 10)
-  findTreasure = Math.floor(Math.random() * 2) == 1
+  shouldFindTreasure = Math.floor(Math.random() * 2) == 1
   endPosition = calculateEndPosition(instructions, [startX, startY])
   treasureCoordinate = calculateTreasureCoordinate(instructions, shouldFindTreasure, [startX, startY])
 

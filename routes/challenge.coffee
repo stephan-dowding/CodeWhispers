@@ -69,6 +69,8 @@ correct = (reqBody, answer, round) ->
   return checkEndCoordinate(reqBody, answer) if round == 2
   return checkEndCoordinateWithTreasureFound(reqBody, answer) if round ==3
 
+  return checkAnswer4(reqBody, answer) if round == 4
+
 checkEnd = (reqBody, answer) ->
   return reqBody['end'] == answer.end.toString()
 
@@ -77,17 +79,23 @@ checkEndCoordinate = (reqBody, answer) ->
     return parseInt(reqBody['endX'], 10) == answer.endX and parseInt(reqBody['endY'], 10) == answer.endY
   catch e
     return false
-  
+
   return reqBody['endX'] == answer.endX.toString() and reqBody['endY'] == answer.endY.toString()
+
 
 checkEndCoordinateWithTreasureFound = (reqBody, answer) ->
   return checkEndCoordinate(reqBody, answer) and reqBody['treasureFound'] == answer.treasureFound.toString()
+
+checkAnswer4 = (reqBody, answer) ->
+  return false unless checkEndCoordinateWithTreasureFound(reqBody, answer)
+  return reqBody['treasureStolen'] == answer.treasureStolen.toString()
 
 generateQandA = (round) ->
   return question0() if round == 0
   return question1() if round == 1
   return question2() if round == 2
   return question3() if round == 3
+  return question4() if round == 4
 
 question0 = ->
   number = Math.floor(Math.random() * 10)
@@ -123,7 +131,7 @@ question2 = ->
     endY: endPosition[1]
 
 getInstructions = (numberOfMoves) ->
-  [1..numberOfMoves].map (num) -> 
+  [1..numberOfMoves].map (num) ->
     number = Math.floor(Math.random() * 4)
     if number == 0 then 'L'
     else if number == 1 then 'R'
@@ -142,6 +150,7 @@ question3 = ->
   startY = Math.floor(Math.random() * 20) + 10
   instructions = getInstructions(Math.floor(Math.random() * 10) + 10)
   shouldFindTreasure = Math.floor(Math.random() * 2) == 1
+
   endPosition = calculateEndPosition(instructions, [startX, startY])
   treasureCoordinate = calculateTreasureCoordinate(instructions, shouldFindTreasure, [startX, startY])
 
@@ -166,7 +175,21 @@ calculateTreasureCoordinate = (instructions, shouldFindTreasure, startingCoordin
     return [treasureX, treasureY]
 
 
+question4 = ->
+  challenge = question3()
+  muggerFound = Math.floor(Math.random() * 2) == 1
 
+  if muggerFound
+    challenge.question.muggerX = challenge.answer.endX
+    challenge.question.muggerY = challenge.answer.endY
+  else
+    challenge.question.muggerX = challenge.answer.endX + 25
+    challenge.question.muggerY = challenge.answer.endY + 25
 
-
-
+  furtherMoves = getInstructions(Math.floor(Math.random() * 4) + 3)
+  newEnd = calculateEndPosition furtherMoves, [challenge.answer.endX, challenge.answer.endY]
+  challenge.question.instructions += furtherMoves
+  challenge.answer.endX = newEnd[0]
+  challenge.answer.endY = newEnd[1]
+  challenge.answer.treasureStolen = muggerFound && challenge.answer.treasureFound
+  challenge

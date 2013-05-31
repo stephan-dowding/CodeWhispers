@@ -65,14 +65,24 @@ setResult = (client, res, round, team, gotItRight, callback) ->
       callback()
 
 correct = (reqBody, answer, round) ->
-  checkEnd(reqBody, answer) if round == 0  || round == 1
+  return checkEnd(reqBody, answer) if round == 0  || round == 1
+  return checkEndCoordinate(reqBody, answer) if round == 2
 
 checkEnd = (reqBody, answer) ->
   return reqBody['end'] == answer.end.toString()
 
+checkEndCoordinate = (reqBody, answer) ->
+  try
+    return parseInt(reqBody['endX'], 10) == answer.endX and parseInt(reqBody['endY'], 10) == answer.endY
+  catch e
+    return false
+  
+  return reqBody['endX'] == answer.endX.toString() and reqBody['endY'] == answer.endY.toString()
+
 generateQandA = (round) ->
   return question0() if round == 0
   return question1() if round == 1
+  return question2() if round == 2
 
 question0 = ->
   number = Math.floor(Math.random() * 10)
@@ -81,8 +91,6 @@ question0 = ->
     start: number
   answer:
     end: number
-
-
 
 question1 = ->
   start = Math.floor(Math.random() * 10)
@@ -94,3 +102,32 @@ question1 = ->
   answer:
     end: start + distance
 
+question2 = ->
+  startX = Math.floor(Math.random() * 20) + 10
+  startY = Math.floor(Math.random() * 20) + 10
+  instructions = getInstructions(Math.floor(Math.random() * 10) + 10)
+  endPosition = calculateEndPosition(instructions, [startX, startY])
+  console.log(endPosition)
+
+  question:
+    startX: startX
+    startY: startY
+    instructions: instructions.toString()
+  answer:
+    endX: endPosition[0]
+    endY: endPosition[1]
+
+getInstructions = (numberOfMoves) ->
+  [1..numberOfMoves].map (num) -> 
+    number = Math.floor(Math.random() * 4)
+    if number == 0 then 'L'
+    else if number == 1 then 'R'
+    else if number == 2 then 'F'
+    else if number == 3 then 'B'
+
+calculateEndPosition = (instructions, startingCoordinate) ->
+  instructions.reduce ((x,y) ->
+    if (y == 'L') then [x[0], x[1] + 1]
+    else if (y == 'R') then [x[0], x[1] - 1]
+    else if (y == 'F') then [x[0] + 1, x[1]]
+    else [x[0] - 1, x[1]]), startingCoordinate

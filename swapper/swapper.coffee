@@ -45,9 +45,7 @@ renameLocalsFromTemp = (branches, targetBranches, callback) ->
 
 reconnectBranches = (branches, callback) ->
   if branches.length == 0
-    console.log "checkout master"
-    exec "git checkout master", gitOptions, (error, stdout, stderr) ->
-      callback()
+    callback()
   else
     console.log "checkout #{branches[0]} and stuff"
     exec "git checkout #{branches[0]}", gitOptions, (error, stdout, stderr) ->
@@ -55,14 +53,30 @@ reconnectBranches = (branches, callback) ->
         exec "git branch --set-upstream #{branches[0]} origin/#{branches[0]}", gitOptions, (error, stdout, stderr) ->
           reconnectBranches branches.slice(1), callback
 
+deleteLocalBranches = (branches, callback) ->
+  if branches.length == 0
+    callback()
+  else
+    console.log "clear branch #{branches[0]}"
+    exec "git branch -d #{branches[0]}", gitOptions, (error, stdout, stderr) ->
+      deleteLocalBranches branches.slice(1), callback
+
+checkoutMaster = (callback) ->
+  console.log "checkout master"
+  exec "git checkout master", gitOptions, (error, stdout, stderr) ->
+    callback()
+
 swapBranches = (branches, targetBranches, callback) ->
-  gitPull ->
-    cycleBranches branches, ->
-      deleteServerBranches branches, ->
-        renameLocalsToTemp branches, ->
-          renameLocalsFromTemp branches, targetBranches, ->
-            reconnectBranches branches, ->
-              callback()
+  checkoutMaster ->
+    deleteLocalBranches branches, ->
+      gitPull ->
+        cycleBranches branches, ->
+          deleteServerBranches branches, ->
+            renameLocalsToTemp branches, ->
+              renameLocalsFromTemp branches, targetBranches, ->
+                reconnectBranches branches, ->
+                  checkoutMaster ->
+                    callback()
 
 getBranchList = (callback) ->
   gitPull ->

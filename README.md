@@ -16,6 +16,11 @@ git branch --set-upstream one origin/one
 
 From our master repo..
 
+# delete local branches
+git checkout master
+git branch -d one
+git branch -d two
+
 #get latest
 git pull
 
@@ -44,6 +49,8 @@ git branch --set-upstream one origin/one
 git checkout two
 git push origin two
 git branch --set-upstream two origin/two
+
+git checkout master
 
 
 Back on the user machine...

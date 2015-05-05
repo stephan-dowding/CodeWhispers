@@ -1,3 +1,6 @@
-branch=$(java -jar lib/branchFinder.jar)
-git pull
+#!/bin/bash
+branch=$(git symbolic-ref --short HEAD)
+
+git fetch
 git reset --hard origin/$branch
+git clean -df

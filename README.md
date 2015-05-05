@@ -9,8 +9,7 @@ set them up on the machine by,
 
 git clone ...
 git checkout -b one
-git push origin one
-git branch --set-upstream one origin/one
+git push -u origin one
 
 [[Same for two]]
 
@@ -43,19 +42,17 @@ git branch -m t--two one
 
 #push and reconnect
 git checkout one
-git push origin one
-git branch --set-upstream one origin/one
+git push -u origin one
 
 git checkout two
-git push origin two
-git branch --set-upstream two origin/two
+git push -u origin two
 
 git checkout master
 
 
 Back on the user machine...
 
-git pull
+git fetch
 git reset --hard origin/one
 
 [[same for two]]

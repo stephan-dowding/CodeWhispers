@@ -9,7 +9,7 @@ gitOptions =
 
 gitPull = (callback) ->
   console.log "pull"
-  exec "git pull", gitOptions, (error, stdout, stderr) ->
+  exec "git pull --all", gitOptions, (error, stdout, stderr) ->
     callback()
 
 cycleBranches = (branches, callback) ->
@@ -49,9 +49,8 @@ reconnectBranches = (branches, callback) ->
   else
     console.log "checkout #{branches[0]} and stuff"
     exec "git checkout #{branches[0]}", gitOptions, (error, stdout, stderr) ->
-      exec "git push origin #{branches[0]}", gitOptions, (error, stdout, stderr) ->
-        exec "git branch --set-upstream #{branches[0]} origin/#{branches[0]}", gitOptions, (error, stdout, stderr) ->
-          reconnectBranches branches.slice(1), callback
+      exec "git push -u origin #{branches[0]}", gitOptions, (error, stdout, stderr) ->
+        reconnectBranches branches.slice(1), callback
 
 deleteLocalBranches = (branches, callback) ->
   if branches.length == 0

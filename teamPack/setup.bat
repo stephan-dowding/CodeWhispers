@@ -17,6 +17,5 @@ if "%3" == "" goto doit
   git clone %2 %1
   cd %1
   git checkout -b %1
-  git push origin %1
-  git branch --set-upstream %1 origin/%1
+  git push -u origin %1
   echo "All Done!"

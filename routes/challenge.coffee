@@ -12,18 +12,18 @@ exports.question = (req, res) ->
       challenge = generateQandA(round)
       challenge.team = req.params['team']
 
-      collection = new mongo.Collection client, 'challenge'
-      collection.remove {team: challenge.team}, {safe:true}, (err, objects) ->
-        if err
-          client.close()
-          res.send(500, err)
-        else
-          collection.save challenge, {safe:true}, (err, objects) ->
+      client.collection 'challenge', (err, collection) ->
+        collection.remove {team: challenge.team}, {safe:true}, (err, objects) ->
+          if err
             client.close()
-            if err
-              res.send(500, err)
-            else
-              res.json challenge.question
+            res.send(500, err)
+          else
+            collection.save challenge, {safe:true}, (err, objects) ->
+              client.close()
+              if err
+                res.send(500, err)
+              else
+                res.json challenge.question
 
 exports.answer = (req, res) ->
   team = req.params['team']
@@ -31,38 +31,38 @@ exports.answer = (req, res) ->
   connection.open (error, client) ->
     round.getRound client, res, (round) ->
 
-      collection = new mongo.Collection client, 'challenge'
-      collection.findOne {team: team}, (err, doc) ->
-        if err
-          client.close()
-          res.send(500, err)
-        else
-          console.log doc
-          console.log req.body
-          gotItRight = correct(req.body, doc.answer, round)
-          setResult client, res, round, team, gotItRight, ->
+      client.collection 'challenge', (err, collection) ->
+        collection.findOne {team: team}, (err, doc) ->
+          if err
             client.close()
-            if gotItRight
-              res.send(200, "OK")
-            else
-              res.send(418, "D'oh!")
+            res.send(500, err)
+          else
+            console.log doc
+            console.log req.body
+            gotItRight = correct(req.body, doc.answer, round)
+            setResult client, res, round, team, gotItRight, ->
+              client.close()
+              if gotItRight
+                res.send(200, "OK")
+              else
+                res.send(418, "D'oh!")
 
 setResult = (client, res, round, team, gotItRight, callback) ->
-  collection = new mongo.Collection client, 'branches'
-  collection.findOne {name: team}, (err, doc) ->
-    if err
-      client.close()
-      res.send(500, err)
-    else if doc
-      doc[round] = gotItRight
-      collection.save doc, {sfe:true}, (err, objects) ->
-        if err
-          client.close()
-          res.send(500, err)
-        else
-          callback()
-    else
-      callback()
+  client.collection 'branches', (err, collection) ->
+    collection.findOne {name: team}, (err, doc) ->
+      if err
+        client.close()
+        res.send(500, err)
+      else if doc
+        doc[round] = gotItRight
+        collection.save doc, {sfe:true}, (err, objects) ->
+          if err
+            client.close()
+            res.send(500, err)
+          else
+            callback()
+      else
+        callback()
 
 correct = (reqBody, answer, round) ->
   return checkEnd(reqBody, answer) if round == 0 || round == 1

@@ -30,20 +30,20 @@ ensureExists = (res, client, branches, callback) ->
   if branches.length == 0
     callback()
   else
-    collection = new mongo.Collection client, 'branches'
-    collection.findOne {name: branches[0]}, (err, doc) ->
-      if err
-        client.close()
-        res.send(500, err)
-      else if doc
-        ensureExists res, client, branches.slice(1), callback
-      else
-        collection.save {name: branches[0], 0: false}, {safe:true}, (err, objects) ->
-          if err
-            client.close()
-            res.send(500, err)
-          else
-            ensureExists res, client, branches.slice(1), callback
+    client.collection 'branches', (err, collection) ->
+      collection.findOne {name: branches[0]}, (err, doc) ->
+        if err
+          client.close()
+          res.send(500, err)
+        else if doc
+          ensureExists res, client, branches.slice(1), callback
+        else
+          collection.save {name: branches[0], 0: false}, {safe:true}, (err, objects) ->
+            if err
+              client.close()
+              res.send(500, err)
+            else
+              ensureExists res, client, branches.slice(1), callback
 
 sendBranchList = (client, res, round, rawBranches) ->
   cleanBranches client, rawBranches, res, ->
@@ -54,25 +54,25 @@ sendBranchList = (client, res, round, rawBranches) ->
         branches: branches
 
 cleanBranches = (client, rawBranches, res, callback) ->
-  collection = new mongo.Collection client, 'branches'
-  collection.remove {name: {$nin: rawBranches}}, {safe:true}, (err, doc) ->
-    if err
-      client.close()
-      res.send(500, err)
-    else
-      callback()
+  client.collection 'branches', (err, collection) ->
+    collection.remove {name: {$nin: rawBranches}}, {safe:true}, (err, doc) ->
+      if err
+        client.close()
+        res.send(500, err)
+      else
+        callback()
 
 getBranches = (client, res, callback) ->
   branches = []
-  collection = new mongo.Collection client, 'branches'
-  collection.find().each (err, doc) ->
-    if err
-      client.close()
-      res.send(500, err)
-    else if doc
-      branches.push doc
-    else
-      callback(branches)
+  client.collection 'branches', (err, collection) ->
+    collection.find().each (err, doc) ->
+      if err
+        client.close()
+        res.send(500, err)
+      else if doc
+        branches.push doc
+      else
+        callback(branches)
 
 exports.swap = (req, res) ->
   swapper.getBranchList (rawBranches) ->
@@ -97,13 +97,13 @@ reinstateBranches = (client, res, branches, callback) ->
   if branches.length == 0
     callback()
   else
-    collection = new mongo.Collection client, 'branches'
-    collection.save branches[0], {safe:true}, (err, objects) ->
-      if err
-        client.close()
-        res.send(500, err)
-      else
-        reinstateBranches client, res, branches.slice(1), callback
+    client.collection 'branches', (err, collection) ->
+      collection.save branches[0], {safe:true}, (err, objects) ->
+        if err
+          client.close()
+          res.send(500, err)
+        else
+          reinstateBranches client, res, branches.slice(1), callback
 
 
 entangle = (origin, destination) ->

@@ -13,11 +13,16 @@ exports.question = (req, res) ->
       challenge.team = req.params['team']
 
       client.collection 'challenge', (err, collection) ->
-        collection.remove {team: challenge.team}, {safe:true}, (err, objects) ->
+        collection.findOne {team: challenge.team}, (err, old_challenge) ->
           if err
             client.close()
             res.send(500, err)
           else
+            if old_challenge
+              challenge._id = old_challenge._id
+              challenge.count = old_challenge.count + 1 if old_challenge.result && old_challenge.count < 10 && old_challenge.round == round
+            console.log "Challenge -- #{challenge.team}"
+            console.log challenge
             collection.save challenge, {safe:true}, (err, objects) ->
               client.close()
               if err
@@ -37,25 +42,35 @@ exports.answer = (req, res) ->
             client.close()
             res.send(500, err)
           else
-            console.log doc
-            console.log req.body
             gotItRight = correct(req.body, doc.answer, round)
-            setResult client, res, round, team, gotItRight, ->
-              client.close()
-              if gotItRight
-                res.send(200, "OK")
+            doc.result = gotItRight
+            collection.save doc, {safe:true}, (err, objects) ->
+              if err
+                client.close()
+                res.send(500, err)
               else
-                res.send(418, "D'oh!")
+                console.log "Answer -- #{team}"
+                console.log doc
+                console.log req.body
+                setResult client, res, round, team, gotItRight, doc.count, ->
+                  client.close()
+                  if gotItRight
+                    if doc.count == 10
+                      res.send(200, "OK")
+                    else
+                      res.redirect(303, "/routes/challenge/#{team}")
+                  else
+                    res.send(418, "D'oh!")
 
-setResult = (client, res, round, team, gotItRight, callback) ->
+setResult = (client, res, round, team, gotItRight, count, callback) ->
   client.collection 'branches', (err, collection) ->
     collection.findOne {name: team}, (err, doc) ->
       if err
         client.close()
         res.send(500, err)
       else if doc
-        doc[round] = gotItRight
-        collection.save doc, {sfe:true}, (err, objects) ->
+        doc[round] = gotItRight && count == 10
+        collection.save doc, {safe:true}, (err, objects) ->
           if err
             client.close()
             res.send(500, err)
@@ -90,12 +105,16 @@ checkEndCoordinateWithTreasureFoundAndStolen = (reqBody, answer) ->
   return reqBody['treasureStolen'] == answer.treasureStolen.toString()
 
 generateQandA = (round) ->
-  return question0() if round == 0
-  return question1() if round == 1
-  return question2() if round == 2
-  return question3() if round == 3
-  return question4() if round == 4
-  return question5() if round == 5
+  challenge = question0() if round == 0
+  challenge = question1() if round == 1
+  challenge = question2() if round == 2
+  challenge = question3() if round == 3
+  challenge = question4() if round == 4
+  challenge = question5() if round == 5
+  challenge.round = round
+  challenge.count = 0
+  challenge.result = false
+  return challenge
 
 question0 = ->
   number = Math.floor(Math.random() * 10)

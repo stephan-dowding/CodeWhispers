@@ -201,21 +201,21 @@ calculateTreasureCoordinate = (instructions, shouldFindTreasure, startingCoordin
 
 question4 = (startingCoordinate)->
   challenge = question3(startingCoordinate)
-  muggerFound = Math.floor(Math.random() * 2) == 1
+  pirateFound = Math.floor(Math.random() * 2) == 1
 
-  if muggerFound
-    challenge.question.muggerX = challenge.answer.endX
-    challenge.question.muggerY = challenge.answer.endY
+  if pirateFound
+    challenge.question.pirateX = challenge.answer.endX
+    challenge.question.pirateY = challenge.answer.endY
   else
-    challenge.question.muggerX = challenge.answer.endX + 25
-    challenge.question.muggerY = challenge.answer.endY + 25
+    challenge.question.pirateX = challenge.answer.endX + 25
+    challenge.question.pirateY = challenge.answer.endY + 25
 
   furtherMoves = getInstructions(Math.floor(Math.random() * 4) + 3)
   newEnd = calculateEndPosition furtherMoves, [challenge.answer.endX, challenge.answer.endY]
   challenge.question.instructions += furtherMoves.join ''
   challenge.answer.endX = newEnd[0]
   challenge.answer.endY = newEnd[1]
-  challenge.answer.treasureStolen = muggerFound && challenge.answer.treasureFound
+  challenge.answer.treasureStolen = pirateFound && challenge.answer.treasureFound
   challenge
 
 question5 = ->
@@ -239,5 +239,5 @@ question5 = ->
     challenge.question.spyX = spyCoord[0] + 30
     challenge.question.spyY = spyCoord[1] + 30
 
-  challenge.answer.treasureStolen = challenge.answer.treasureFound && !challenge.answer.treasureStolen && spyFound
+  challenge.answer.treasureStolen = challenge.answer.treasureFound && (challenge.answer.treasureStolen != spyFound)
   challenge

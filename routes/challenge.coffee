@@ -82,7 +82,7 @@ setResult = (client, res, round, team, gotItRight, count, callback) ->
 correct = (reqBody, answer, round) ->
   return checkEnd(reqBody, answer) if round == 0 || round == 1
   return checkEndCoordinate(reqBody, answer) if round == 2
-  return checkEndCoordinateWithTreasureFound(reqBody, answer) if round ==3
+  return checkEndCoordinateWithTreasureFound(reqBody, answer) if round == 3
   return checkEndCoordinateWithTreasureFoundAndStolen(reqBody, answer) if round == 4 || round == 5
 
 checkEnd = (reqBody, answer) ->
@@ -227,8 +227,15 @@ question5 = ->
 
   spyCoord = calculateEndPosition initialMoves, [startX, startY]
 
-  challenge = question4(spyCoord)
-  challenge.question.instructions = initialMoves.join('') + challenge.question.instructions
+  direction = Math.floor(Math.random() * 4)
+  movesAway = [1..50].map (num) ->
+    if direction == 0 then 'L'
+    else if direction == 1 then 'R'
+    else if direction == 2 then 'F'
+    else if direction == 3 then 'B'
+
+  challenge = question4(calculateEndPosition(movesAway, spyCoord))
+  challenge.question.instructions = initialMoves.join('') + movesAway.join('') + challenge.question.instructions
   challenge.question.startX = startX
   challenge.question.startY = startY
 

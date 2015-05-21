@@ -4,29 +4,31 @@ block content
   h1=title
   h3 Welcome to #{title}
 
-  p please download on of the following setup files to help get ChineseWhispers setup on your machine
+  h3 Throughout this experiment we are under the retro prime directive. Do not judge the code of others!! Just do the best you can with situation at hand!
+
+
+  p Please download on of the following setup files to help get ChineseWhispers setup on your machine
 
   p
     a(href="/teamPack/setup-whisper.bat") Windows
   p
     a(href="/teamPack/setup-whisper.sh") Mac Linux Unix
 
-  p it is expected that ruby and git are available from your command line
+  p It is expected that ruby and git are available from your command line
 
-  p give run permissions to the downloaded script
+  p Give run permissions to the downloaded script
 
-  p to get setup run #[code #{"./setup-whisper.sh ~YourTeamName~ http://~myIp~/server"}]
+  p To get setup run #[code #{"./setup-whisper.sh ~YourTeamName~ http://~myIp~:8888/r/whispers.git"}]
 
   p #[code cd] into the new folder called #[code ~YourTeamName~]
 
-  p run #[code ruby whisper.rb ~myIp~] to run your code against the q &amp; a server
+  p Run #[code ruby whisper.rb ~myIp~] to run your code against the q &amp; a server
 
-  p run #[code #{"./reconnect.sh"}] when I tell you to pick up your new branch
+  p Run #[code #{"./reconnect.sh"}] when I tell you to pick up your new branch
 
-  p when you are happy that you have fully answered a question... make sure to commit and push you code to my git server.
+  p When you are happy that you have fully answered a question... make sure to commit and push you code to my git server.
 
-  p git ground rules for this experiment... Do not make any new branches!!! Do not stash!!! Only do basic git commit + push
-
+  h3 Git ground rules for this experiment... Do not make any new branches!!! Do not stash!!! Only do basic git commit + push
 
   h2 Round 0
 
@@ -46,4 +48,6 @@ block content
   p The answer will expect:
     pre
       code.
-        end: ~integer~
+        {
+          end: ~integer~
+        }

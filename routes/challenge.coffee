@@ -87,22 +87,22 @@ correct = (reqBody, answer, round) ->
 
 checkEnd = (reqBody, answer) ->
   try
-    return parseInt(reqBody['end'], 10) == answer.end
+    return reqBody.end == answer.end
   catch e
     return false
 
 checkEndCoordinate = (reqBody, answer) ->
   try
-    return parseInt(reqBody['endX'], 10) == answer.endX and parseInt(reqBody['endY'], 10) == answer.endY
+    return reqBody.endX == answer.endX and reqBody.endY == answer.endY
   catch e
     return false
 
 checkEndCoordinateWithTreasureFound = (reqBody, answer) ->
-  return checkEndCoordinate(reqBody, answer) and reqBody['treasureFound'] == answer.treasureFound.toString()
+  return checkEndCoordinate(reqBody, answer) and reqBody.treasureFound == answer.treasureFound
 
 checkEndCoordinateWithTreasureFoundAndStolen = (reqBody, answer) ->
   return false unless checkEndCoordinateWithTreasureFound(reqBody, answer)
-  return reqBody['treasureStolen'] == answer.treasureStolen.toString()
+  return reqBody.treasureStolen == answer.treasureStolen
 
 generateQandA = (round) ->
   challenge = question0() if round == 0

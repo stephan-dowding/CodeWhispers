@@ -1,0 +1,49 @@
+extends layout
+
+block content
+  h1=title
+  h3 Welcome to #{title}
+
+  p please download on of the following setup files to help get ChineseWhispers setup on your machine
+
+  p
+    a(href="/teamPack/setup.bat") Windows
+  p
+    a(href="/teamPack/setup.sh") Mac Linux Unix
+
+  p it is expected that ruby and git are available from your command line
+
+  p give run permissions to the downloaded script
+
+  p to get setup run #[code #{"./setup.sh ~YourTeamName~ http://~myIp~/server"}]
+
+  p #[code cd] into the new folder called #[code ~YourTeamName~]
+
+  p run #[code ruby whisper.rb ~myIp~] to run your code against the q &amp; a server
+
+  p run #[code #{"./reconnect.sh"}] when I tell you to pick up your new branch
+
+  p when you are happy that you have fully answered a question... make sure to commit and push you code to my git server.
+
+  p git ground rules for this experiment... Do not make any new branches!!! Do not stash!!! Only do basic git commit + push
+
+
+  h2 Round 0
+
+  p You are an adventurer looking for adventure on an infinite plain.  In this round you are rather lazy and do not move from the spot.
+
+  p The question server will provide you with a #[start] value. (integer)
+
+  p The answer expects the same value marked as #[end].
+
+  p The question server will provide:
+    pre
+      code.
+          {
+            start: ~integer~
+          }
+
+  p The answer will expect:
+    pre
+      code.
+        end: ~integer~

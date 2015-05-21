@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  h1=title
+  h3 Welcome to #{title}
+
+  h2 Round 5
+
+  p There is now also a Spy on the field! If you bump into the Spy, they will follow you and steal the treasure if you pick it up!  They will ignore you if you have already picked it up.
+
+  p However, if you cross paths with the Pirate after the Spy has taken your treasure, the Spy and Pirate will get in a fight, and you get the treasure back! (It’s no longer stolen!!) Both the Spy and Pirate will get injured in the fight, so they will ignore you if you cross their paths again.
+
+
+  p The question server will provide:
+    pre
+      code.
+          {
+            startX: ~integer~
+            startY: ~integer~
+            instructions: ~string~
+            treasureX: ~integer~
+            treasureY: ~integer~
+            pirateX: ~integer~
+            pirateY: ~integer~
+            spyX: ~integer~
+            spyY: ~integer~
+          }
+
+  p The answer will expect:
+    pre
+      code.
+        endX: ~integer~
+        endY: ~integer~
+        treasureFound: ~boolean~
+        treasureStolen: ~boolean~

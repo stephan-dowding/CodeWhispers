@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1=title
+  h3 Welcome to #{title}
+
+  h2 Round 3
+
+  p Now there is some proper adventuring to do!! A treasure has been dropped on the plain… your task is to determine if we got it! (when we travel over it, we automatically pick it up)
+
+  p The question server will provide:
+    pre
+      code.
+          {
+            startX: ~integer~
+            startY: ~integer~
+            instructions: ~string~
+            treasureX: ~integer~
+            treasureY: ~integer~
+          }
+
+  p The answer will expect:
+    pre
+      code.
+        endX: ~integer~
+        endY: ~integer~
+        treasureFound: ~boolean~

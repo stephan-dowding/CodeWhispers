@@ -22,6 +22,7 @@ def doChallenge(git_branch)
     doChallenge(git_branch)
   else
     puts 'Boo! Wrong! :('
+    puts response.body
   end
 end
 

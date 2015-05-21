@@ -60,7 +60,7 @@ exports.answer = (req, res) ->
                     else
                       res.redirect(303, "/routes/challenge/#{team}")
                   else
-                    res.send(418, "D'oh!")
+                    res.status(418).json({yourAnswer: req.body, correctAnswer: doc.answer})
 
 setResult = (client, res, round, team, gotItRight, count, callback) ->
   client.collection 'branches', (err, collection) ->

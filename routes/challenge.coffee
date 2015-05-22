@@ -20,7 +20,7 @@ exports.question = (req, res) ->
           else
             if old_challenge
               challenge._id = old_challenge._id
-              challenge.count = old_challenge.count + 1 if old_challenge.result && old_challenge.count < 10 && old_challenge.round == round
+              challenge.count = old_challenge.count + 1 if old_challenge.result && old_challenge.count < requiredAttempts(round) && old_challenge.round == round
             console.log "Challenge -- #{challenge.team}"
             console.log challenge
             collection.save challenge, {safe:true}, (err, objects) ->
@@ -55,7 +55,7 @@ exports.answer = (req, res) ->
                 setResult client, res, round, team, gotItRight, doc.count, ->
                   client.close()
                   if gotItRight
-                    if doc.count == 10
+                    if doc.count >= requiredAttempts(round)
                       res.send(200, "OK")
                     else
                       res.redirect(303, "/routes/challenge/#{team}")
@@ -69,7 +69,7 @@ setResult = (client, res, round, team, gotItRight, count, callback) ->
         client.close()
         res.send(500, err)
       else if doc
-        doc[round] = gotItRight && count == 10
+        doc[round] = gotItRight && count == requiredAttempts(round)
         collection.save doc, {safe:true}, (err, objects) ->
           if err
             client.close()
@@ -78,6 +78,10 @@ setResult = (client, res, round, team, gotItRight, count, callback) ->
             callback()
       else
         callback()
+
+requiredAttempts = (round) ->
+  return 2 if round == 0
+  return round * 5
 
 correct = (reqBody, answer, round) ->
   return checkEnd(reqBody, answer) if round == 0 || round == 1

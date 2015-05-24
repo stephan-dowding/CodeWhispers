@@ -1,12 +1,12 @@
 #!/bin/bash
-if [ $# -ne 2 ]
+if [ $# -ne 1 ]
 then
   echo "Proper Usage:"
-  echo "setup [TeamName] [GitServer]"
+  echo "setup [TeamName]"
   exit
 fi
 
-git clone $2 $1
+git clone http://chinesewhisper.cloudapp.net/r/whispers.git $1
 cd $1
 git checkout -b $1
 git push -u origin $1

@@ -17,12 +17,12 @@ end
 
 
 def getQuestion
-  uri = URI("http://#{ARGV[0]}:3000/challenge/question/#{@git_branch}")
+  uri = URI("http://chinesewhisper.cloudapp.net:3000/challenge/question/#{@git_branch}")
   JSON.parse(Net::HTTP.get(uri))
 end
 
 def sendAnswer(answer)
-  uri = URI("http://#{ARGV[0]}:3000/challenge/answer/#{@git_branch}")
+  uri = URI("http://chinesewhisper.cloudapp.net:3000/challenge/answer/#{@git_branch}")
 
   json_headers = {"Content-Type" => "application/json",
                 "Accept" => "application/json"}
@@ -40,11 +40,6 @@ def sendAnswer(answer)
     puts response.body
     exit 1
   end
-end
-
-if ARGV[0] == nil
-  puts 'PROPER USAGE: ruby whisper.rb <Question Server IP address>'
-  exit 1
 end
 
 @git_branch = `git symbolic-ref --short HEAD`.strip

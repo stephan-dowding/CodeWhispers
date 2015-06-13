@@ -88,6 +88,7 @@ correct = (reqBody, answer, round) ->
   return checkEndCoordinate(reqBody, answer) if round == 2
   return checkEndCoordinateWithTreasureFound(reqBody, answer) if round == 3
   return checkEndCoordinateWithTreasureFoundAndStolen(reqBody, answer) if round == 4 || round == 5
+  return checkEndCoordinateWithTreasureOwner(reqBody, answer) if round == 6
 
 checkEnd = (reqBody, answer) ->
   try
@@ -108,6 +109,10 @@ checkEndCoordinateWithTreasureFoundAndStolen = (reqBody, answer) ->
   return false unless checkEndCoordinateWithTreasureFound(reqBody, answer)
   return reqBody.treasureStolen == answer.treasureStolen
 
+checkEndCoordinateWithTreasureOwner = (reqBody, answer) ->
+  return false unless checkEndCoordinate(reqBody, answer)
+  return reqBody.treasureOwner == answer.treasureOwner
+
 generateQandA = (round) ->
   challenge = question0() if round == 0
   challenge = question1() if round == 1
@@ -115,6 +120,7 @@ generateQandA = (round) ->
   challenge = question3() if round == 3
   challenge = question4() if round == 4
   challenge = question5() if round == 5
+  challenge = question6() if round == 6
   challenge.round = round
   challenge.count = 0
   challenge.result = false
@@ -251,4 +257,57 @@ question5 = ->
     challenge.question.spyY = spyCoord[1] + 30
 
   challenge.answer.treasureStolen = challenge.answer.treasureFound && (challenge.answer.treasureStolen != spyFound)
+  challenge
+
+question6 = ->
+  initialMoves = getInstructions(Math.floor(Math.random() * 4) + 3)
+  spyFound = Math.floor(Math.random() * 2) == 1
+
+  startX = Math.floor(Math.random() * 20) + 10
+  startY = Math.floor(Math.random() * 20) + 10
+
+  spyCoord = calculateEndPosition initialMoves, [startX, startY]
+
+  direction = Math.floor(Math.random() * 4)
+  movesAway = [1..50].map (num) ->
+    if direction == 0 then 'L'
+    else if direction == 1 then 'R'
+    else if direction == 2 then 'F'
+    else if direction == 3 then 'B'
+
+
+  challenge = question3(calculateEndPosition(movesAway, spyCoord))
+  pirateFound = Math.floor(Math.random() * 2) == 1
+
+  if pirateFound
+    challenge.question.pirateX = challenge.answer.endX
+    challenge.question.pirateY = challenge.answer.endY
+  else
+    challenge.question.pirateX = challenge.answer.endX + 25
+    challenge.question.pirateY = challenge.answer.endY + 25
+
+  furtherMoves = getInstructions(Math.floor(Math.random() * 4) + 3)
+  newEnd = calculateEndPosition furtherMoves, [challenge.answer.endX, challenge.answer.endY]
+  challenge.question.instructions += furtherMoves.join ''
+  challenge.answer.endX = newEnd[0]
+  challenge.answer.endY = newEnd[1]
+
+  challenge.question.instructions = initialMoves.join('') + movesAway.join('') + challenge.question.instructions
+  challenge.question.startX = startX
+  challenge.question.startY = startY
+
+  if spyFound
+    challenge.question.spyX = spyCoord[0]
+    challenge.question.spyY = spyCoord[1]
+  else
+    challenge.question.spyX = spyCoord[0] + 30
+    challenge.question.spyY = spyCoord[1] + 30
+
+  challenge.answer.treasureOwner = 'no-one' unless challenge.answer.treasureFound
+  challenge.answer.treasureOwner = 'me' if challenge.answer.treasureFound and spyFound == pirateFound
+  challenge.answer.treasureOwner = 'pirate' if challenge.answer.treasureFound and !spyFound and pirateFound
+  challenge.answer.treasureOwner = 'spy' if challenge.answer.treasureFound and spyFound and !pirateFound
+
+  delete challenge.answer.treasureFound
+
   challenge

@@ -28,8 +28,8 @@ app.use express.static(path.join(__dirname, 'public'))
 if 'development' == app.get('env')
   app.use express.errorHandler()
 
-app.get '/', routes.index
-app.get '/whisper', routes.whisper
+app.get '/dashboard', routes.dashboard
+app.get '/', routes.whisper
 app.get '/branches', branch.list
 app.get '/details', branch.getDetails
 app.get '/branches/swap', branch.swap

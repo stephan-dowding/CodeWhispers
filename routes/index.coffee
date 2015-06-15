@@ -1,5 +1,5 @@
-exports.index = (req, res) ->
-  res.render 'index', { title: 'ChineseWhispers' }
+exports.dashboard = (req, res) ->
+  res.render 'dashboard', { title: 'ChineseWhispers' }
 
 exports.whisper = (req, res) ->
   mongo = require 'mongodb'

@@ -11,7 +11,7 @@ if "%2" == "" goto doit
 
 
 :doit
-  git clone http://chinesewhisper.cloudapp.net/r/whispers.git %1
+  git clone http://chinesewhisper.cloudapp.net:8080/r/whispers.git %1
   cd %1
   git checkout -b %1
   git push -u origin %1

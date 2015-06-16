@@ -2,11 +2,19 @@ extends layout
 
 block content
   script(type='text/javascript', src='/javascripts/details.js')
-  h1=title
-  p Welcome to #{title}
 
-  h2 Round:&nbsp;
-    span.roundNumber
+  div.pane1
 
-  div.details
-    table.branches
+    h1
+      em http://chinesewhispers.cloudapp.net
+
+    h1=title
+    p Welcome to #{title}
+
+    h2 Round:&nbsp;
+      span.roundNumber
+
+    div.details
+      table.branches
+
+  div.instructions

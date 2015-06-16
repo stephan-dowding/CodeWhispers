@@ -1,53 +1,47 @@
-extends layout
-
-block content
-  h1=title
-  h3 Welcome to #{title}
-
-  h3 Throughout this experiment we are under the retro prime directive. Do not judge the code of others!! Just do the best you can with situation at hand!
+h3 Throughout this experiment we are under the retro prime directive. Do not judge the code of others!! Just do the best you can with situation at hand!
 
 
-  p Please download on of the following setup files to help get ChineseWhispers setup on your machine
+p Please download on of the following setup files to help get ChineseWhispers setup on your machine
 
-  p
-    a(href="/teamPack/setup-whisper.bat") Windows
-  p
-    a(href="/teamPack/setup-whisper.sh") Mac Linux Unix
+p
+  a(href="/teamPack/setup-whisper.bat") Windows
+p
+  a(href="/teamPack/setup-whisper.sh") Mac Linux Unix
 
-  p It is expected that ruby and git are available from your command line
+p It is expected that ruby and git are available from your command line
 
-  p Give run permissions to the downloaded script
+p Give run permissions to the downloaded script
 
-  p To get setup run #[code #{"./setup-whisper.sh ~YourTeamName~"}]
+p To get setup run #[code #{"./setup-whisper.sh ~YourTeamName~"}]
 
-  p #[code cd] into the new folder called #[code ~YourTeamName~]
+p #[code cd] into the new folder called #[code ~YourTeamName~]
 
-  p Run #[code ruby whisper.rb] to run your code against the q &amp; a server
+p Run #[code ruby whisper.rb] to run your code against the q &amp; a server
 
-  p Run #[code #{"./reconnect.sh"}] when I tell you to pick up your new branch
+p Run #[code #{"./reconnect.sh"}] when I tell you to pick up your new branch
 
-  p When you are happy that you have fully answered a question... make sure to commit and push you code to my git server.
+p When you are happy that you have fully answered a question... make sure to commit and push you code to my git server.
 
-  h3 Git ground rules for this experiment... Do not make any new branches!!! Do not stash!!! Only do basic git commit + push
+h3 Git ground rules for this experiment... Do not make any new branches!!! Do not stash!!! Only do basic git commit + push
 
-  h2 Round 0
+h2 Round 0
 
-  p You are an adventurer looking for adventure on an infinite plain.  In this round you are rather lazy and do not move from the spot.
+p You are an adventurer looking for adventure on an infinite plain.  In this round you are rather lazy and do not move from the spot.
 
-  p The question server will provide you with a #[start] value. (integer)
+p The question server will provide you with a #[start] value. (integer)
 
-  p The answer expects the same value marked as #[end].
+p The answer expects the same value marked as #[end].
 
-  p The question server will provide:
-    pre
-      code.
-          {
-            start: ~integer~
-          }
-
-  p The answer will expect:
-    pre
-      code.
+p The question server will provide:
+  pre
+    code.
         {
-          end: ~integer~
+          start: ~integer~
         }
+
+p The answer will expect:
+  pre
+    code.
+      {
+        end: ~integer~
+      }

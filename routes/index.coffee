@@ -8,7 +8,7 @@ exports.whisper = (req, res) ->
 
 exports.question = (req, res) ->
   getRound res, (round) ->
-      res.render "q#{round}"
+    res.render "q#{round}"
 
 getRound = (res, callback) ->
   mongo = require 'mongodb'

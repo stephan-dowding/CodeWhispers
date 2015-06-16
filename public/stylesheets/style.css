@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 25px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -7,6 +7,5 @@ a {
   color: #00B7FF;
 }
 
-.container { width: 100%; height: 1000px; }
 .pane1      { width: 50%; float: left; }
-.instructions { width: 50%; float: right; height: 100%; }
+.instructions { width: 50%; float: right; }

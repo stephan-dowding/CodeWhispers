@@ -24,8 +24,10 @@ getDetails = ->
     if currentRound != data.round
       currentRound = data.round
       $('.roundNumber').text currentRound
-      $('#instructionFrame').attr 'src', ( i, val ) ->
-        val
+      $.get '/question', (data) ->
+        instructions = $('.instructions')
+        instructions.children().remove()
+        instructions.append(data)
 
 $ ->
   getDetails()

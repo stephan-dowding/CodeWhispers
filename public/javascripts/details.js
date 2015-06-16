@@ -29,8 +29,11 @@
       if (currentRound !== data.round) {
         currentRound = data.round;
         $('.roundNumber').text(currentRound);
-        return $('#instructionFrame').attr('src', function(i, val) {
-          return val;
+        return $.get('/question', function(data) {
+          var instructions;
+          instructions = $('.instructions');
+          instructions.children().remove();
+          return instructions.append(data);
         });
       }
     });

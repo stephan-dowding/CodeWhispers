@@ -1,33 +1,27 @@
-extends layout
+h2 Round 4
 
-block content
-  h1=title
-  h3 Welcome to #{title}
-
-  h2 Round 4
-
-  p A Pirate has been spotted in the plain. They are after the treasure! If you cross paths with the Pirate after picking up the treasure, it will be stolen! (We still mark it as found) The Pirate will ignore you if you have not picked up the treasure yet.
+p A Pirate has been spotted in the plain. They are after the treasure! If you cross paths with the Pirate after picking up the treasure, it will be stolen! (We still mark it as found) The Pirate will ignore you if you have not picked up the treasure yet.
 
 
-  p The question server will provide:
-    pre
-      code.
-          {
-            startX: ~integer~
-            startY: ~integer~
-            instructions: ~string~
-            treasureX: ~integer~
-            treasureY: ~integer~
-            pirateX: ~integer~
-            pirateY: ~integer~
-          }
-
-  p The answer will expect:
-    pre
-      code.
+p The question server will provide:
+  pre
+    code.
         {
-          endX: ~integer~
-          endY: ~integer~
-          treasureFound: ~boolean~
-          treasureStolen: ~boolean~
+          startX: ~integer~
+          startY: ~integer~
+          instructions: ~string~
+          treasureX: ~integer~
+          treasureY: ~integer~
+          pirateX: ~integer~
+          pirateY: ~integer~
         }
+
+p The answer will expect:
+  pre
+    code.
+      {
+        endX: ~integer~
+        endY: ~integer~
+        treasureFound: ~boolean~
+        treasureStolen: ~boolean~
+      }

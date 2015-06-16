@@ -1,24 +1,18 @@
-extends layout
+h2 Round 1
 
-block content
-  h1=title
-  h3 Welcome to #{title}
+p You are now ready to start adventuring!  You will additionally be sent a set of instructions.  We don’t want to blow your mind, so we only have one instruction #[code F] which will increase your position by one.
 
-  h2 Round 1
-
-  p You are now ready to start adventuring!  You will additionally be sent a set of instructions.  We don’t want to blow your mind, so we only have one instruction #[code F] which will increase your position by one.
-
-  p The question server will provide:
-    pre
-      code.
-          {
-            start: ~integer~
-            instructions: ~string~
-          }
-
-  p The answer will expect:
-    pre
-      code.
+p The question server will provide:
+  pre
+    code.
         {
-          end: ~integer~
+          start: ~integer~
+          instructions: ~string~
         }
+
+p The answer will expect:
+  pre
+    code.
+      {
+        end: ~integer~
+      }

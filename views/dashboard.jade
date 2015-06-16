@@ -2,11 +2,20 @@ extends layout
 
 block content
   script(type='text/javascript', src='/javascripts/details.js')
-  h1=title
-  p Welcome to #{title}
+  div.container
+    div.pane1
 
-  h2 Round:&nbsp;
-    span.roundNumber
+      h1
+        em http://chinesewhispers.cloudapp.net
 
-  div.details
-    table.branches
+      h1=title
+      p Welcome to #{title}
+
+      h2 Round:&nbsp;
+        span.roundNumber
+
+      div.details
+        table.branches
+
+    div.instructions
+      iframe#instructionFrame(src='/' style='width: 100%; height: 100%; border: none;')

@@ -1,3 +1,5 @@
+currentRound = -1
+
 getDetails = ->
   $.getJSON '/details', (data) ->
     table = $('.branches')
@@ -19,7 +21,11 @@ getDetails = ->
         row.append "<td><img src='/images/#{value}.png' height='25' width='25' /></td>"
       table.append row
 
-    $('.roundNumber').text data.round
+    if currentRound != data.round
+      currentRound = data.round
+      $('.roundNumber').text currentRound
+      $('#instructionFrame').attr 'src', ( i, val ) ->
+        val
 
 $ ->
   getDetails()

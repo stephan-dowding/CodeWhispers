@@ -1,11 +1,11 @@
 chai = require "chai"
-subject = require "../../challenges/challenge2"
+subject = require "../../challenges/challenge3"
 challengeUtils = require "../../challenges/challengeUtils"
 _ = require "underscore"
 
 expect = chai.expect
 
-describe 'challenge2', ->
+describe 'challenge3', ->
   it 'returns a string of FBLR for instructions', ->
     challenge = subject.challenge()
     expect(challenge.question.instructions.length).to.be.above(0)
@@ -16,6 +16,11 @@ describe 'challenge2', ->
     challenge = subject.challenge()
     expect(challenge.question.startX).to.be.a('number')
     expect(challenge.question.startY).to.be.a('number')
+
+  it 'provides treasureX and treasureY as numbers', ->
+    challenge = subject.challenge()
+    expect(challenge.question.treasureX).to.be.a('number')
+    expect(challenge.question.treasureY).to.be.a('number')
 
   it 'provides correct endX and endY', ->
     challenge = subject.challenge()

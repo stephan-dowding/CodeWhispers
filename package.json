@@ -13,7 +13,9 @@
   "devDependencies": {
     "mocha": "*",
     "chai": "*",
-    "underscore": "*"
+    "chai-things": "*",
+    "underscore": "*",
+    "mockery": "*"
   },
   "scripts": { "test": "mocha" }
 }

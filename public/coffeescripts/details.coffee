@@ -31,4 +31,4 @@ getDetails = ->
 
 $ ->
   getDetails()
-  setInterval getDetails, 5000
+  setInterval getDetails, 500

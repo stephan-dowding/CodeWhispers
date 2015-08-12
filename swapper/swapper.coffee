@@ -89,7 +89,7 @@ getBranchList = (callback) ->
         lines = stdout.toString().split "\n"
 
         for line in lines
-          branches.push line.substr(line.lastIndexOf("/") + 1)  if line && !(line.endsWith "master")
+          branches.push line.substr(line.lastIndexOf("/") + 1)  if line && !(line.endsWith "/master")
 
         callback(branches)
         syncLock.release()

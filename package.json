@@ -9,5 +9,13 @@
     "express": "3.2.1",
     "jade": "*",
     "mongodb": "*"
-  }
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "chai-things": "*",
+    "underscore": "*",
+    "mockery": "*"
+  },
+  "scripts": { "test": "mocha" }
 }

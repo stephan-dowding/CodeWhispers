@@ -41,7 +41,7 @@
 
   $(function() {
     getDetails();
-    return setInterval(getDetails, 5000);
+    return setInterval(getDetails, 500);
   });
 
 }).call(this);

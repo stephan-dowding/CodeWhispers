@@ -1,3 +1,5 @@
+syncLock = require "../util/syncLock"
+
 if typeof String.prototype.endsWith != 'function'
   String.prototype.endsWith = (str) ->
     this.slice(-str.length) == str
@@ -66,27 +68,31 @@ checkoutMaster = (callback) ->
     callback()
 
 swapBranches = (branches, targetBranches, callback) ->
-  checkoutMaster ->
-    deleteLocalBranches branches, ->
-      gitPull ->
-        cycleBranches branches, ->
-          deleteServerBranches branches, ->
-            renameLocalsToTemp branches, ->
-              renameLocalsFromTemp branches, targetBranches, ->
-                reconnectBranches branches, ->
-                  checkoutMaster ->
-                    callback()
+  syncLock.lock ->
+    checkoutMaster ->
+      deleteLocalBranches branches, ->
+        gitPull ->
+          cycleBranches branches, ->
+            deleteServerBranches branches, ->
+              renameLocalsToTemp branches, ->
+                renameLocalsFromTemp branches, targetBranches, ->
+                  reconnectBranches branches, ->
+                    checkoutMaster ->
+                      callback()
+                      syncLock.release()
 
 getBranchList = (callback) ->
-  gitPull ->
-    exec "git branch -r", gitOptions, (error, stdout, stderr) ->
-      branches = []
-      lines = stdout.toString().split "\n"
+  syncLock.lock ->
+    gitPull ->
+      exec "git branch -r", gitOptions, (error, stdout, stderr) ->
+        branches = []
+        lines = stdout.toString().split "\n"
 
-      for line in lines
-        branches.push line.substr(line.lastIndexOf("/") + 1)  if line && !(line.endsWith "master")
+        for line in lines
+          branches.push line.substr(line.lastIndexOf("/") + 1)  if line && !(line.endsWith "/master")
 
-      callback(branches)
+        callback(branches)
+        syncLock.release()
 
 
 exports.swapBranches = swapBranches

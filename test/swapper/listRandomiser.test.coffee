@@ -1,10 +1,9 @@
+chai = require "chai"
 randomiser = require "../../swapper/listRandomiser"
 
-assert = require "assert"
+expect = chai.expect
 
 describe 'listRandomiser', ->
   describe '#randomise()', ->
     it 'swaps elements in an array with count 2', ->
-      result = randomiser.randomise [1,2]
-      assert.equal result[0], 2
-      assert.equal result[1], 1
+      expect(randomiser.randomise [1,2]).to.deep.equal([2,1])

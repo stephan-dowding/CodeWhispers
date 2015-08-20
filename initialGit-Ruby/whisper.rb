@@ -17,12 +17,12 @@ end
 
 
 def getQuestion
-  uri = URI("http://chinesewhisper.cloudapp.net/challenge/question/#{@git_branch}")
+  uri = URI("http://codewhispers.cloudapp.net/challenge/question/#{@git_branch}")
   JSON.parse(Net::HTTP.get(uri))
 end
 
 def sendAnswer(answer)
-  uri = URI("http://chinesewhisper.cloudapp.net/challenge/answer/#{@git_branch}")
+  uri = URI("http://codewhispers.cloudapp.net/challenge/answer/#{@git_branch}")
 
   json_headers = {"Content-Type" => "application/json",
                 "Accept" => "application/json"}

@@ -6,7 +6,7 @@ if "%2" == "" goto doit
 
 :bad
   echo Proper Usage:
-  echo run-app.bat [ChineseWhisperIPAddress]
+  echo run-app.bat [CodeWhisperIPAddress]
   goto :eof
 
 

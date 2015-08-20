@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 CHINESE WHISPER SERVER IP ADDRESS"
+  echo "Usage: $0 CODE WHISPER SERVER IP ADDRESS"
   exit 1
 fi
 

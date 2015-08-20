@@ -9,7 +9,7 @@ round = require './round'
 exports.list = (req, res) ->
   swapper.getBranchList (branches) ->
     res.render 'branches',
-      title: "Chinese Whispers"
+      title: "Code Whispers"
       branches: branches
 
 exports.getDetails = (req, res) ->
@@ -90,7 +90,7 @@ exports.swap = (req, res) ->
               reinstateBranches client, res, branches, ->
                 client.close()
                 res.render 'branchMapping',
-                  title: "Chinese Whispers"
+                  title: "Code Whispers"
                   branchMapping: entangle sourceBranches, targetBranches
 
 reinstateBranches = (client, res, branches, callback) ->

@@ -13,15 +13,15 @@ getInstructions = (numberOfMoves) ->
     else if number == 2 then 'F'
     else if number == 3 then 'B'
 
-calculateTreasureCoordinate = (instructions, shouldFindTreasure, startingCoordinate) ->
-  if(shouldFindTreasure)
-    treasureAtMove = Math.floor(Math.random() * instructions.length + 1)
-    return calculateEndPosition(instructions.slice(0, treasureAtMove), startingCoordinate)
+calculateItemCoordinate = (instructions, shouldFindItem, startingCoordinate) ->
+  if(shouldFindItem)
+    itemAtMove = Math.floor(Math.random() * instructions.length + 1)
+    return calculateEndPosition(instructions.slice(0, itemAtMove), startingCoordinate)
   else
-    treasureX = Math.floor(Math.random() * 20) + 50
-    treasureY = Math.floor(Math.random() * 20) + 50
-    return [treasureX, treasureY]
+    itemX = Math.floor(Math.random() * 20) + 50
+    itemY = Math.floor(Math.random() * 20) + 50
+    return [itemX, itemY]
 
 exports.calculateEndPosition = calculateEndPosition
 exports.getInstructions = getInstructions
-exports.calculateTreasureCoordinate = calculateTreasureCoordinate
+exports.calculateItemCoordinate = calculateItemCoordinate

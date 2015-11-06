@@ -1,14 +1,18 @@
 challengeUtils = require './challengeUtils'
 
-challenge = ->
+exports.challenge = ->
+  shouldFindTreasure = Math.floor(Math.random() * 2) == 1
+  getChallenge(shouldFindTreasure)
+
+getChallenge = (shouldFindTreasure) ->
+
   startX = Math.floor(Math.random() * 20) + 10
   startY = Math.floor(Math.random() * 20) + 10
 
   instructions = challengeUtils.getInstructions(Math.floor(Math.random() * 10) + 10)
-  shouldFindTreasure = Math.floor(Math.random() * 2) == 1
 
   endPosition = challengeUtils.calculateEndPosition(instructions, [startX, startY])
-  treasureCoordinate = challengeUtils.calculateTreasureCoordinate(instructions, shouldFindTreasure, [startX, startY])
+  treasureCoordinate = challengeUtils.calculateItemCoordinate(instructions, shouldFindTreasure, [startX, startY])
 
   question:
     startX: startX
@@ -21,4 +25,4 @@ challenge = ->
     endY: endPosition[1]
     treasureFound: shouldFindTreasure
 
-exports.challenge = challenge
+exports.getChallenge = getChallenge

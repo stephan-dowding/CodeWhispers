@@ -1,12 +1,12 @@
 chai = require "chai"
-subject = require "../../challenges/challenge3"
+subject = require "../../challenges/challenge4"
 challengeUtils = require "../../challenges/challengeUtils"
 testUtils = require "./testUtils"
 _ = require "underscore"
 
 expect = chai.expect
 
-describe 'challenge3', ->
+describe 'challenge4', ->
   it 'returns a string of FBLR for instructions', ->
     challenge = subject.challenge()
     expect(challenge.question.instructions.length).to.be.above(0)
@@ -28,25 +28,23 @@ describe 'challenge3', ->
     q = challenge.question
     a = challenge.answer
     instructions = q.instructions.split('')
-    expectedEnd = challengeUtils.calculateEndPosition(instructions, [q.startX, q.startY])
-    expect([a.endX, a.endY]).to.deep.equal(expectedEnd)
+    [expectedEndX, expectedEndY] = challengeUtils.calculateEndPosition(instructions, [q.startX, q.startY])
+    expect(a.endX).to.equal(expectedEndX)
+    expect(a.endY).to.equal(expectedEndY)
 
   it 'marks the treasure as found when it should', ->
     challenge = subject.getChallenge(true)
-    q = challenge.question
     a = challenge.answer
     expect(a.treasureFound).to.be.true
 
   it 'marks the treasure as not found when it should', ->
     challenge = subject.getChallenge(false)
-    q = challenge.question
     a = challenge.answer
     expect(a.treasureFound).to.be.false
 
   it 'places the treasure on the route when found', ->
     challenge = subject.getChallenge(true)
     q = challenge.question
-    a = challenge.answer
     instructions = q.instructions.split('')
     route = testUtils.calculatePath(instructions, [q.startX, q.startY])
 
@@ -55,7 +53,6 @@ describe 'challenge3', ->
   it 'places the treasure off the route when not found', ->
     challenge = subject.getChallenge(false)
     q = challenge.question
-    a = challenge.answer
     instructions = q.instructions.split('')
     route = testUtils.calculatePath(instructions, [q.startX, q.startY])
 
@@ -72,3 +69,57 @@ describe 'challenge3', ->
       expect(route).to.contain.something.that.deep.equals([q.treasureX, q.treasureY])
     else
       expect(route).not.to.contain.something.that.deep.equals([q.treasureX, q.treasureY])
+
+  it 'places the pirate on the route when met', ->
+    challenge = subject.getChallenge(false, true)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = testUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    expect(route).to.contain.something.that.deep.equals([q.pirateX, q.pirateY])
+
+  it 'places the pirate off the route when not met', ->
+    challenge = subject.getChallenge(false, false)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = testUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    expect(route).not.to.contain.something.that.deep.equals([q.pirateX, q.pirateY])
+
+  it 'places the pirate after treasure when both found', ->
+    challenge = subject.getChallenge(true, true)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = testUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    treasureIndex = route.reduce (itemAt, pos, index) ->
+      if !itemAt && pos[0] == q.treasureX && pos[1] == q.treasureY
+        itemAt = index
+      itemAt
+    , undefined
+
+    pirateIndex = route.reduce (itemAt, pos, index) ->
+      if pos[0] == q.pirateX && pos[1] == q.pirateY
+        itemAt = index
+      itemAt
+    , undefined
+
+    expect(treasureIndex).to.be.lessThan(pirateIndex)
+
+  it 'marks the treasure as stolen when both treasure and pirate found', ->
+    challenge = subject.getChallenge(true, true)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.true
+
+  it 'marks the treasure as not stolen if either treasure or pirate not found', ->
+    challenge = subject.getChallenge(false, true)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.false
+
+    challenge = subject.getChallenge(true, false)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.false
+
+    challenge = subject.getChallenge(false, false)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.false

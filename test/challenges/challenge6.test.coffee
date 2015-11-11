@@ -1,11 +1,11 @@
 chai = require "chai"
-subject = require "../../challenges/challenge4"
+subject = require "../../challenges/challenge6"
 challengeUtils = require "../../challenges/challengeUtils"
 _ = require "underscore"
 
 expect = chai.expect
 
-describe 'challenge4', ->
+describe 'challenge6', ->
   it 'returns a string of FBLR for instructions', ->
     challenge = subject.challenge()
     expect(challenge.question.instructions.length).to.be.above(0)
@@ -30,16 +30,6 @@ describe 'challenge4', ->
     [expectedEndX, expectedEndY] = challengeUtils.calculateEndPosition(instructions, [q.startX, q.startY])
     expect(a.endX).to.equal(expectedEndX)
     expect(a.endY).to.equal(expectedEndY)
-
-  it 'marks the treasure as found when it should', ->
-    challenge = subject.getChallenge(true)
-    a = challenge.answer
-    expect(a.treasureFound).to.be.true
-
-  it 'marks the treasure as not found when it should', ->
-    challenge = subject.getChallenge(false)
-    a = challenge.answer
-    expect(a.treasureFound).to.be.false
 
   it 'places the treasure on the route when found', ->
     challenge = subject.getChallenge(true)
@@ -85,7 +75,23 @@ describe 'challenge4', ->
 
     expect(route).not.to.contain.something.that.deep.equals([q.pirateX, q.pirateY])
 
-  it 'places the pirate after treasure when both found', ->
+  it 'places the spy on the route when met', ->
+    challenge = subject.getChallenge(false, false, true)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    expect(route).to.contain.something.that.deep.equals([q.spyX, q.spyY])
+
+  it 'places the spy off the route when not met', ->
+    challenge = subject.getChallenge(false, false, false)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    expect(route).not.to.contain.something.that.deep.equals([q.spyX, q.spyY])
+
+  it 'places the pirate on after after treasure when both found', ->
     challenge = subject.getChallenge(true, true)
     q = challenge.question
     instructions = q.instructions.split('')
@@ -99,25 +105,55 @@ describe 'challenge4', ->
       itemAt
     , undefined
 
-    expect(treasureIndex).to.be.lessThan(pirateIndex)
+    expect(pirateIndex).to.be.least(treasureIndex)
 
-  it 'marks the treasure as stolen when both treasure and pirate found', ->
-    challenge = subject.getChallenge(true, true)
+  it 'places the spy on or before treasure when both found', ->
+    challenge = subject.getChallenge(true, false, true)
+    q = challenge.question
+    instructions = q.instructions.split('')
+
+    treasureIndex = challengeUtils.getFirstIndexOfCoordinate([q.treasureX, q.treasureY], instructions, [q.startX, q.startY])
+    spyIndex = challengeUtils.getFirstIndexOfCoordinate([q.spyX, q.spyY], instructions, [q.startX, q.startY])
+
+    expect(spyIndex).to.be.most(treasureIndex)
+
+  it 'marks the treasure owner as pirate when both treasure and pirate found', ->
+    challenge = subject.getChallenge(true, true, false)
     a = challenge.answer
-    expect(a.treasureStolen).to.be.true
+    expect(a.treasureOwner).to.equal('pirate')
 
-  it 'marks the treasure as not stolen when found and pirate not found', ->
-    challenge = subject.getChallenge(true, false)
+  it 'marks the treasure owner as spy when both treasure and spy found', ->
+    challenge = subject.getChallenge(true, false, true)
     a = challenge.answer
-    expect(a.treasureStolen).to.be.false
+    expect(a.treasureOwner).to.equal('spy')
 
-  describe 'marks the treasure as not stolen if treasure not found', ->
-    it 'pirate found', ->
-      challenge = subject.getChallenge(false, true)
-      a = challenge.answer
-      expect(a.treasureStolen).to.be.false
+  it 'marks the treasure owner as me when treasure, pirate and spy found', ->
+    challenge = subject.getChallenge(true, true, true)
+    a = challenge.answer
+    expect(a.treasureOwner).to.equal('me')
 
-    it 'pirate not found', ->
-      challenge = subject.getChallenge(false, false)
+  it 'marks the treasure owner as me when treasure found but pirate and spy are not', ->
+    challenge = subject.getChallenge(true, false, false)
+    a = challenge.answer
+    expect(a.treasureOwner).to.equal('me')
+
+  describe 'marks the treasure owner as no-one if treasure not found', ->
+    it 'found pirate', ->
+      challenge = subject.getChallenge(false, true, false)
       a = challenge.answer
-      expect(a.treasureStolen).to.be.false
+      expect(a.treasureOwner).to.equal('no-one')
+
+    it 'found spy', ->
+      challenge = subject.getChallenge(false, false, true)
+      a = challenge.answer
+      expect(a.treasureOwner).to.equal('no-one')
+
+    it 'found pirate and spy', ->
+      challenge = subject.getChallenge(false, true, true)
+      a = challenge.answer
+      expect(a.treasureOwner).to.equal('no-one')
+
+    it 'all lonely', ->
+      challenge = subject.getChallenge(false, false, false)
+      a = challenge.answer
+      expect(a.treasureOwner).to.equal('no-one')

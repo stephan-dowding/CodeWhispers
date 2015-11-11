@@ -5,7 +5,7 @@ _ = require "underscore"
 
 expect = chai.expect
 
-describe 'challenge4', ->
+describe 'challenge5', ->
   it 'returns a string of FBLR for instructions', ->
     challenge = subject.challenge()
     expect(challenge.question.instructions.length).to.be.above(0)
@@ -142,24 +142,28 @@ describe 'challenge4', ->
     a = challenge.answer
     expect(a.treasureStolen).to.be.false
 
-  it 'marks the treasure as not stolen if either treasure or pirate/spy not found', ->
-    challenge = subject.getChallenge(false, true, false)
-    a = challenge.answer
-    expect(a.treasureStolen).to.be.false
-
-    challenge = subject.getChallenge(false, false, true)
-    a = challenge.answer
-    expect(a.treasureStolen).to.be.false
-
-
-    challenge = subject.getChallenge(false, true, true)
-    a = challenge.answer
-    expect(a.treasureStolen).to.be.false
-
+  it 'marks the treasure as not stolen when pirate and spy not found', ->
     challenge = subject.getChallenge(true, false, false)
     a = challenge.answer
     expect(a.treasureStolen).to.be.false
 
-    challenge = subject.getChallenge(false, false, false)
-    a = challenge.answer
-    expect(a.treasureStolen).to.be.false
+  describe 'marks the treasure as not stolen if treasure not found', ->
+    it 'pirate found', ->
+      challenge = subject.getChallenge(false, true, false)
+      a = challenge.answer
+      expect(a.treasureStolen).to.be.false
+
+    it 'spy found', ->
+      challenge = subject.getChallenge(false, false, true)
+      a = challenge.answer
+      expect(a.treasureStolen).to.be.false
+
+    it 'pirate and spy found', ->
+      challenge = subject.getChallenge(false, true, true)
+      a = challenge.answer
+      expect(a.treasureStolen).to.be.false
+
+    it 'all lonely', ->
+      challenge = subject.getChallenge(false, false, false)
+      a = challenge.answer
+      expect(a.treasureStolen).to.be.false

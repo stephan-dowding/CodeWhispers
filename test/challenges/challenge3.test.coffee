@@ -1,7 +1,6 @@
 chai = require "chai"
 subject = require "../../challenges/challenge3"
 challengeUtils = require "../../challenges/challengeUtils"
-testUtils = require "./testUtils"
 _ = require "underscore"
 
 expect = chai.expect
@@ -48,7 +47,7 @@ describe 'challenge3', ->
     q = challenge.question
     a = challenge.answer
     instructions = q.instructions.split('')
-    route = testUtils.calculatePath(instructions, [q.startX, q.startY])
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
 
     expect(route).to.contain.something.that.deep.equals([q.treasureX, q.treasureY])
 
@@ -57,7 +56,7 @@ describe 'challenge3', ->
     q = challenge.question
     a = challenge.answer
     instructions = q.instructions.split('')
-    route = testUtils.calculatePath(instructions, [q.startX, q.startY])
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
 
     expect(route).not.to.contain.something.that.deep.equals([q.treasureX, q.treasureY])
 
@@ -66,7 +65,7 @@ describe 'challenge3', ->
     q = challenge.question
     a = challenge.answer
     instructions = q.instructions.split('')
-    route = testUtils.calculatePath(instructions, [q.startX, q.startY])
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
 
     if a.treasureFound
       expect(route).to.contain.something.that.deep.equals([q.treasureX, q.treasureY])

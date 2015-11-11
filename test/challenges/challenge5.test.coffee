@@ -1,5 +1,5 @@
 chai = require "chai"
-subject = require "../../challenges/challenge4"
+subject = require "../../challenges/challenge5"
 challengeUtils = require "../../challenges/challengeUtils"
 _ = require "underscore"
 
@@ -85,7 +85,23 @@ describe 'challenge4', ->
 
     expect(route).not.to.contain.something.that.deep.equals([q.pirateX, q.pirateY])
 
-  it 'places the pirate after treasure when both found', ->
+  it 'places the spy on the route when met', ->
+    challenge = subject.getChallenge(false, false, true)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    expect(route).to.contain.something.that.deep.equals([q.spyX, q.spyY])
+
+  it 'places the spy off the route when not met', ->
+    challenge = subject.getChallenge(false, false, false)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    expect(route).not.to.contain.something.that.deep.equals([q.spyX, q.spyY])
+
+  it 'places the pirate on after after treasure when both found', ->
     challenge = subject.getChallenge(true, true)
     q = challenge.question
     instructions = q.instructions.split('')
@@ -103,7 +119,27 @@ describe 'challenge4', ->
       itemAt
     , undefined
 
-    expect(treasureIndex).to.be.lessThan(pirateIndex)
+    expect(pirateIndex).to.be.least(treasureIndex)
+
+  it 'places the spy on or before treasure when both found', ->
+    challenge = subject.getChallenge(true, false, true)
+    q = challenge.question
+    instructions = q.instructions.split('')
+    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
+
+    treasureIndex = route.reduce (itemAt, pos, index) ->
+      if !itemAt && pos[0] == q.treasureX && pos[1] == q.treasureY
+        itemAt = index
+      itemAt
+    , undefined
+
+    spyIndex = route.reduce (itemAt, pos, index) ->
+      if !itemAt && pos[0] == q.spyX && pos[1] == q.spyY
+        itemAt = index
+      itemAt
+    , undefined
+
+    expect(spyIndex).to.be.most(treasureIndex)
 
   it 'marks the treasure as stolen when both treasure and pirate found', ->
     challenge = subject.getChallenge(true, true)

@@ -5,6 +5,31 @@ chai.use(require('chai-things'));
 expect = chai.expect
 
 describe 'challengeutils', ->
+  describe 'getFirstIndexOfCoordinate', ->
+    it 'finds the coordinate', ->
+      index = subject.getFirstIndexOfCoordinate([3, 0], ['F','F','F','F','F'], [0, 0])
+      expect(index).to.equal(3)
+
+    it 'returns 0 if start point', ->
+      index = subject.getFirstIndexOfCoordinate([0, 0], ['F','F','F','F','F'], [0, 0])
+      expect(index).to.equal(0)
+
+    it 'return undefined if not there', ->
+      index = subject.getFirstIndexOfCoordinate([10, 10], ['F','F','F','F','F'], [0, 0])
+      expect(index).to.be.undefined
+
+  describe '#calculatePath', ->
+    it 'adds 1 to X on F', ->
+      expect(subject.calculatePath(['F'], [0,0])).to.deep.equal([[0,0],[1,0]])
+    it 'adds 1 to Y on L', ->
+      expect(subject.calculatePath(['L'], [0,0])).to.deep.equal([[0,0],[0,1]])
+    it 'subtracts 1 from X on B', ->
+      expect(subject.calculatePath(['B'], [0,0])).to.deep.equal([[0,0],[-1,0]])
+    it 'subtracts 1 from Y on R', ->
+      expect(subject.calculatePath(['R'], [0,0])).to.deep.equal([[0,0],[0,-1]])
+    it 'can go in a loop', ->
+      expect(subject.calculatePath(['F','R','B','L'], [0,0])).to.deep.equal([[0,0],[1,0],[1,-1],[0,-1],[0,0]])
+
   describe '#calculatedEndPosition', ->
     it 'adds 1 to X on F', ->
       expect(subject.calculateEndPosition(['F'], [0,0])).to.deep.equal([1,0])

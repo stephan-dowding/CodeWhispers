@@ -107,11 +107,7 @@ describe 'challenge4', ->
     instructions = q.instructions.split('')
     route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
 
-    treasureIndex = route.reduce (itemAt, pos, index) ->
-      if !itemAt && pos[0] == q.treasureX && pos[1] == q.treasureY
-        itemAt = index
-      itemAt
-    , undefined
+    treasureIndex = challengeUtils.getFirstIndexOfCoordinate([q.treasureX, q.treasureY], instructions, [q.startX, q.startY])
 
     pirateIndex = route.reduce (itemAt, pos, index) ->
       if pos[0] == q.pirateX && pos[1] == q.pirateY
@@ -125,19 +121,9 @@ describe 'challenge4', ->
     challenge = subject.getChallenge(true, false, true)
     q = challenge.question
     instructions = q.instructions.split('')
-    route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
 
-    treasureIndex = route.reduce (itemAt, pos, index) ->
-      if !itemAt && pos[0] == q.treasureX && pos[1] == q.treasureY
-        itemAt = index
-      itemAt
-    , undefined
-
-    spyIndex = route.reduce (itemAt, pos, index) ->
-      if !itemAt && pos[0] == q.spyX && pos[1] == q.spyY
-        itemAt = index
-      itemAt
-    , undefined
+    treasureIndex = challengeUtils.getFirstIndexOfCoordinate([q.treasureX, q.treasureY], instructions, [q.startX, q.startY])
+    spyIndex = challengeUtils.getFirstIndexOfCoordinate([q.spyX, q.spyY], instructions, [q.startX, q.startY])
 
     expect(spyIndex).to.be.most(treasureIndex)
 

@@ -40,6 +40,6 @@ getChallenge = (shouldFindTreasure, shouldMeetPirate, shouldMeetSpy) ->
     endX: endPosition[0]
     endY: endPosition[1]
     treasureFound: shouldFindTreasure
-    treasureStolen: shouldFindTreasure && shouldMeetPirate
+    treasureStolen: shouldFindTreasure && (!shouldMeetPirate != !shouldMeetSpy) #XOR
 
 exports.getChallenge = getChallenge

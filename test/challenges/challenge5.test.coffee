@@ -128,19 +128,38 @@ describe 'challenge4', ->
     expect(spyIndex).to.be.most(treasureIndex)
 
   it 'marks the treasure as stolen when both treasure and pirate found', ->
-    challenge = subject.getChallenge(true, true)
+    challenge = subject.getChallenge(true, true, false)
     a = challenge.answer
     expect(a.treasureStolen).to.be.true
 
-  it 'marks the treasure as not stolen if either treasure or pirate not found', ->
-    challenge = subject.getChallenge(false, true)
+  it 'marks the treasure as stolen when both treasure and spy found', ->
+    challenge = subject.getChallenge(true, false, true)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.true
+
+  it 'marks the treasure as not stolen when treasure, pirate and spy found', ->
+    challenge = subject.getChallenge(true, true, true)
     a = challenge.answer
     expect(a.treasureStolen).to.be.false
 
-    challenge = subject.getChallenge(true, false)
+  it 'marks the treasure as not stolen if either treasure or pirate/spy not found', ->
+    challenge = subject.getChallenge(false, true, false)
     a = challenge.answer
     expect(a.treasureStolen).to.be.false
 
-    challenge = subject.getChallenge(false, false)
+    challenge = subject.getChallenge(false, false, true)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.false
+
+
+    challenge = subject.getChallenge(false, true, true)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.false
+
+    challenge = subject.getChallenge(true, false, false)
+    a = challenge.answer
+    expect(a.treasureStolen).to.be.false
+
+    challenge = subject.getChallenge(false, false, false)
     a = challenge.answer
     expect(a.treasureStolen).to.be.false

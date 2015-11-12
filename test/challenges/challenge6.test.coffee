@@ -54,10 +54,10 @@ describe 'challenge6', ->
     instructions = q.instructions.split('')
     route = challengeUtils.calculatePath(instructions, [q.startX, q.startY])
 
-    if a.treasureFound
-      expect(route).to.contain.something.that.deep.equals([q.treasureX, q.treasureY])
-    else
+    if a.treasureOwner == 'no-one'
       expect(route).not.to.contain.something.that.deep.equals([q.treasureX, q.treasureY])
+    else
+      expect(route).to.contain.something.that.deep.equals([q.treasureX, q.treasureY])
 
   it 'places the pirate on the route when met', ->
     challenge = subject.getChallenge(false, true)

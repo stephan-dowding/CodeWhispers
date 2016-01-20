@@ -1,3 +1,5 @@
+Build Status: [![Build Status](https://snap-ci.com/stephan-dowding/CodeWhispers/branch/master/build_image)](https://snap-ci.com/stephan-dowding/CodeWhispers/branch/master)
+
 At some point explain how to set up the server etc...
 
 

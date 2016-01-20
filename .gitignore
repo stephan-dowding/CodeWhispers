@@ -3,3 +3,4 @@ git-master/
 .DS_Store
 node_modules/
 initialGit/out/
+.vagrant/

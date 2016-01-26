@@ -11,4 +11,8 @@ server {
         fastcgi_param PATH_INFO           $1;
         include       fastcgi_params;
     }
+
+    location / {
+      proxy_pass http://127.0.0.1:3000;
+    }
 }

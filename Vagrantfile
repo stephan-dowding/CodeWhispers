@@ -62,6 +62,14 @@ Vagrant.configure(2) do |config|
     git commit -m "initial commit"
     git push -u origin master
 
+    cd /vagrant
+    npm install
+    sudo npm install -g pm2
+    sudo pm2 start app.coffee
+    sudo pm2 startup systemd
+
+    # curl http://localhost:3000/round/0
+
   SHELL
 
 end

@@ -27,14 +27,8 @@ Vagrant.configure(2) do |config|
 
     sudo apt-get update
     curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-    sudo apt-get install -y nodejs
-    sudo apt-get install -y build-essential
-    sudo apt-get install -y coffeescript
-    sudo apt-get install -y mongodb
-
-    sudo apt-get install -y nginx
-    sudo apt-get install -y git
-    sudo apt-get install -y fcgiwrap
+    sudo apt-get install -y nodejs build-essential mongodb nginx git fcgiwrap
+    sudo npm install -g pm2 coffee-script
 
     sudo rm -f /etc/nginx/sites-enabled/*
 
@@ -64,8 +58,7 @@ Vagrant.configure(2) do |config|
 
     cd /vagrant
     npm install
-    sudo npm install -g pm2
-    sudo pm2 start app.coffee
+    sudo pm2 start app.coffee -i 0 -n whisper
     sudo pm2 startup systemd
 
     # curl http://localhost:3000/round/0

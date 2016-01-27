@@ -24,7 +24,7 @@ public class ChallengeServer {
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
     public static JsonObject getQuestion() throws Exception {
-        HttpGet get = new HttpGet(String.format("http://codewhispers.cloudapp.net/challenge/question/%s", Util.branchName()));
+        HttpGet get = new HttpGet(String.format("http://192.168.33.10/challenge/question/%s", Util.branchName()));
 
         get.setConfig(noRedirect());
         HttpResponse getResponse = httpClient.execute(get);
@@ -37,7 +37,7 @@ public class ChallengeServer {
     }
 
     public static void postAnswer(JsonObject answer) throws Exception {
-        HttpPost request = new HttpPost(String.format("http://codewhispers.cloudapp.net/challenge/answer/%s", Util.branchName()));
+        HttpPost request = new HttpPost(String.format("http://192.168.33.10/challenge/answer/%s", Util.branchName()));
 
         request.setConfig(noRedirect());
 

@@ -6,7 +6,7 @@ then
   exit
 fi
 
-git clone http://codewhispers.cloudapp.net:8080/r/whispers.git $1
+git clone http://192.168.33.10/git/whisper.git $1
 cd $1
 git checkout -b $1
 git push -u origin $1

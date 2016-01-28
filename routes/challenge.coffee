@@ -4,6 +4,8 @@ connection = require './connection'
 
 round = require './round'
 
+checker = require '../challenges/checker'
+
 exports.question = (req, res) ->
 
   connection.open (error, client) ->
@@ -84,34 +86,7 @@ requiredAttempts = (round) ->
   return round * 5
 
 correct = (reqBody, answer, round) ->
-  return checkEnd(reqBody, answer) if round == 0 || round == 1
-  return checkEndCoordinate(reqBody, answer) if round == 2
-  return checkEndCoordinateWithTreasureFound(reqBody, answer) if round == 3
-  return checkEndCoordinateWithTreasureFoundAndStolen(reqBody, answer) if round == 4 || round == 5
-  return checkEndCoordinateWithTreasureOwner(reqBody, answer) if round == 6
-
-checkEnd = (reqBody, answer) ->
-  try
-    return reqBody.end == answer.end
-  catch e
-    return false
-
-checkEndCoordinate = (reqBody, answer) ->
-  try
-    return reqBody.endX == answer.endX and reqBody.endY == answer.endY
-  catch e
-    return false
-
-checkEndCoordinateWithTreasureFound = (reqBody, answer) ->
-  return checkEndCoordinate(reqBody, answer) and reqBody.treasureFound == answer.treasureFound
-
-checkEndCoordinateWithTreasureFoundAndStolen = (reqBody, answer) ->
-  return false unless checkEndCoordinateWithTreasureFound(reqBody, answer)
-  return reqBody.treasureStolen == answer.treasureStolen
-
-checkEndCoordinateWithTreasureOwner = (reqBody, answer) ->
-  return false unless checkEndCoordinate(reqBody, answer)
-  return reqBody.treasureOwner == answer.treasureOwner
+  checker.check(answer, reqBody)
 
 generateQandA = (round) ->
   challenge = require("../challenges/challenge#{round}").challenge()

@@ -10,6 +10,7 @@ challenge = require './routes/challenge'
 round = require './routes/round'
 http = require 'http'
 path = require 'path'
+bodyParser = require('body-parser')
 
 app = express()
 
@@ -18,6 +19,7 @@ app.set 'port', process.env.PORT || 3000
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
 app.use express.static(path.join(__dirname, 'public'))
+app.use bodyParser.json()
 
 app.get '/dashboard', routes.dashboard
 app.get '/', routes.whisper

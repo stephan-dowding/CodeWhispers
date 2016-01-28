@@ -58,7 +58,7 @@ Vagrant.configure(2) do |config|
 
     cd /vagrant
     npm install
-    sudo pm2 start app.coffee -i 0 -n whisper
+    sudo pm2 start app.coffee -n whisper
     sudo pm2 startup systemd
 
     # curl http://localhost:3000/round/0

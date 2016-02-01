@@ -14,6 +14,12 @@ bodyParser = require('body-parser')
 
 app = express()
 
+server = http.createServer(app)
+io = require('socket.io')(server)
+
+challenge.initIo io
+round.initIo io.of('/round')
+
 # all environments
 app.set 'port', process.env.PORT || 3000
 app.set 'views', __dirname + '/views'
@@ -32,5 +38,5 @@ app.get '/round/:number', round.set
 app.get '/challenge/question/:team', challenge.question
 app.post '/challenge/answer/:team', challenge.answer
 
-http.createServer(app).listen app.get('port'), ->
+server.listen app.get('port'), ->
   console.log 'Express server listening on port ' + app.get('port')

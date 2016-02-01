@@ -21,14 +21,19 @@ getDetails = ->
         row.append "<td><img src='/images/#{value}.png' height='25' width='25' /></td>"
       table.append row
 
-    if currentRound != data.round
-      currentRound = data.round
-      $('.roundNumber').text currentRound
-      $.get '/question', (data) ->
-        instructions = $('.instructions')
-        instructions.children().remove()
-        instructions.append(data)
+updateInstructions = (roundNumber) ->
+  if currentRound != roundNumber
+    currentRound = roundNumber
+    $('.roundNumber').text currentRound
+    $.get '/question', (data) ->
+      instructions = $('.instructions')
+      instructions.children().remove()
+      instructions.append(data)
 
 $ ->
+  roundSocket = io.connect '/round'
+  roundSocket.on 'new round', (roundNumber) ->
+    updateInstructions(roundNumber)
+
   getDetails()
   setInterval getDetails, 500

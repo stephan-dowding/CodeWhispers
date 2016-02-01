@@ -1,6 +1,14 @@
 mongo = require 'mongodb'
-
 connection = require './connection'
+
+io = null
+exports.initIo = (_io) ->
+  io = _io
+  io.on 'connection', (socket) ->
+    connection.open (error, client) ->
+      exports.getRound client, null, (round) ->
+        client.close()
+        socket.emit('new round', round)
 
 exports.set = (req, res) ->
   number = parseInt req.params['number']
@@ -25,6 +33,7 @@ exports.set = (req, res) ->
                   else
                     updateBranchEntries client, res, number, ->
                       client.close()
+                      io.emit('new round', number)
                       res.send(200, "Round: #{number}")
 
 updateBranchEntries = (client, res, round, callback) ->

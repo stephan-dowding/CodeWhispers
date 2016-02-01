@@ -1,9 +1,6 @@
 mongo = require 'mongodb'
-
 connection = require './connection'
-
 round = require './round'
-
 checker = require '../challenges/checker'
 
 exports.question = (req, res) ->

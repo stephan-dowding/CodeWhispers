@@ -17,7 +17,6 @@ app = express()
 server = http.createServer(app)
 io = require('socket.io')(server)
 
-challenge.initIo io
 round.initIo io.of('/round')
 
 # all environments

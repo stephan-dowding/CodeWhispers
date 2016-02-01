@@ -18,7 +18,7 @@ getDetails = ->
       row.append "<td>#{item.name}</td>"
       for i in [0..data.round]
         value = if item[i] then "tick" else "cross"
-        row.append "<td><img src='/images/#{value}.png' height='25' width='25' /></td>"
+        row.append "<td><img src='/assets/#{value}.png' height='25' width='25' /></td>"
       table.append row
 
 updateInstructions = (roundNumber) ->

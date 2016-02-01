@@ -4,3 +4,4 @@ git-master/
 node_modules/
 initialGit/out/
 .vagrant/
+builtAssets/

@@ -21,10 +21,19 @@ round.initIo io.of('/round')
 
 # all environments
 app.set 'port', process.env.PORT || 3000
-app.set 'views', __dirname + '/views'
+app.set 'views', path.join(__dirname, 'views')
 app.set 'view engine', 'jade'
 app.use express.static(path.join(__dirname, 'public'))
 app.use bodyParser.json()
+
+app.use(require("connect-assets")({
+  paths: [
+    'assets/css',
+    'assets/js',
+    'assets/img'
+  ],
+  fingerprinting: false
+}))
 
 app.get '/dashboard', routes.dashboard
 app.get '/', routes.whisper

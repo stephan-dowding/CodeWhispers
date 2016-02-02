@@ -31,11 +31,11 @@ case "$refname","$newrev_type" in
 	refs/heads/*,commit)
 		# branch
 		if [ "$oldrev" = "$zero" ]; then
-			echo "***** $refname" >&2
 			if [[ "$refname" =~ ^refs/heads/(.+)$ ]]; then
-				echo "*** Creating a branch: ${BASH_REMATCH[1]}" >&2
+				echo "*** Creating a team: ${BASH_REMATCH[1]}"
+				wget --method=PUT -bqO- http://localhost:3000/teams/${BASH_REMATCH[1]}
 			else
-				echo "*** Didn't like the branch name" >&2
+				echo "*** Didn't like the team name :(" >&2
 				exit 2
 			fi
 		fi
@@ -43,12 +43,9 @@ case "$refname","$newrev_type" in
 	refs/heads/*,delete)
 		# delete branch
 		if [[ "$refname" =~ ^refs/heads/(.+)$ ]]; then
-                        echo "*** Deleting a branch: ${BASH_REMATCH[1]}" >&2
-                else
-                        echo "*** Didn't like the branch name" >&2
-                        exit 2
-                fi
-		echo "*** Deleting a branch" >&2
+			echo "*** Deleting a team: ${BASH_REMATCH[1]}"
+			wget --method=DELETE -bqO- http://localhost:3000/teams/${BASH_REMATCH[1]}
+		fi
 		;;
 esac
 

@@ -46,5 +46,10 @@ app.get '/round/:number', round.set
 app.get '/challenge/question/:team', challenge.question
 app.post '/challenge/answer/:team', challenge.answer
 
+app.put '/teams/:team', branch.add
+app.delete '/teams/:team', branch.remove
+
+branch.rescan()
+
 server.listen app.get('port'), ->
   console.log 'Express server listening on port ' + app.get('port')

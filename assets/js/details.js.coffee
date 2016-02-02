@@ -5,21 +5,24 @@ $ ->
 
   getDetails = ->
     $.getJSON '/details', (data) ->
-      updateInstructions(data.round)
-      table.children().remove()
-
-      header = $("<tr>")
-      header.append "<th>Teams</th>"
-
-      for i in [0..currentRound]
-        header.append "<th id='header-#{i}'>#{i}</th>"
-
-      table.append header
-
       teams = data.branches
+      updateInstructions(data.round)
+      rebuildTable()
 
-      for team in teams
-        addTeam(team)
+  rebuildTable = ->
+    table.children().remove()
+
+    header = $("<tr>")
+    header.append "<th>Teams</th>"
+
+    for i in [0..currentRound]
+      header.append "<th id='header-#{i}'>#{i}</th>"
+
+    table.append header
+
+
+    for team in teams
+      addTeam(team)
 
   addTeam = (item) ->
     row = $("<tr id='team-#{item.name}'>")
@@ -42,6 +45,7 @@ $ ->
   roundSocket = io.connect '/round'
   roundSocket.on 'new round', (roundNumber) ->
     updateInstructions(roundNumber)
+    rebuildTable()
 
   getDetails()
 

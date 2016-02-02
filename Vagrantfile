@@ -27,13 +27,13 @@ Vagrant.configure(2) do |config|
 
     sudo apt-get update
     curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-    sudo apt-get install -y nodejs build-essential mongodb nginx git fcgiwrap
+    sudo apt-get install -y nodejs build-essential mongodb nginx git fcgiwrap libkrb5-dev
     sudo npm install -g pm2 coffee-script
 
     sudo rm -f /etc/nginx/sites-enabled/*
 
-    sudo cp /vagrant/nginx/git /etc/nginx/sites-available/git
-    sudo ln -s /etc/nginx/sites-available/git /etc/nginx/sites-enabled/git
+    sudo cp /vagrant/nginx/whisper /etc/nginx/sites-available/whisper
+    sudo ln -s /etc/nginx/sites-available/whisper /etc/nginx/sites-enabled/whisper
 
     sudo service nginx restart
 
@@ -48,20 +48,24 @@ Vagrant.configure(2) do |config|
     cd /srv/git/whisper.git
     sudo git config http.receivepack true
 
-    git clone http://localhost/git/whisper.git /vagrant/git-master
+    mkdir /vagrant/git-master
     cp -R /vagrant/initialGit-Ruby/* /vagrant/git-master/
 
     cd /vagrant/git-master
+    git init
+    git remote add origin http://localhost/git/whisper.git
     git add --all
     git commit -m "initial commit"
     git push -u origin master
+
+    sudo ln -s /vagrant/git-hooks/update /srv/git/whisper.git/hooks
 
     cd /vagrant
     npm install
     sudo pm2 start app.coffee -n whisper
     sudo pm2 startup systemd
 
-    # curl http://localhost:3000/round/0
+    wget --tries 10 --retry-connrefused -qO- http://localhost:3000/round/0
 
   SHELL
 

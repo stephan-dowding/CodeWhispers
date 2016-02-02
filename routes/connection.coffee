@@ -1,7 +1,5 @@
-mongo = require 'mongodb'
+mongoClient = require('mongodb').MongoClient
 
 exports.open = (callback) ->
-  server = new mongo.Server "127.0.0.1", 27017, {}
-  connection = new mongo.Db 'CodeWhispers', server, {w: 1}
-  connection.open (error, client) ->
+  mongoClient.connect 'mongodb://127.0.0.1:27017/CodeWhispers', (error, client) ->
     callback(error, client)

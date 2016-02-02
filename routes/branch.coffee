@@ -6,6 +6,10 @@ connection = require './connection'
 
 round = require './round'
 
+io = null
+exports.initIo = (_io) ->
+  io = _io
+
 exports.list = (req, res) ->
   swapper.getBranchList (branches) ->
     res.render 'branches',
@@ -80,6 +84,7 @@ exports.add = (req, res) ->
       res.send(500, error)
     else
       ensureExists client, [name], ->
+        io.emit('new team', name)
         res.send(200)
 
 exports.remove = (req, res) ->
@@ -91,6 +96,7 @@ exports.remove = (req, res) ->
     else
       client.collection 'branches', (err, collection) ->
         collection.remove {name: name}, {safe:true}, (err, doc) ->
+          io.emit('remove team', name)
           res.send(200)
 
 exports.swap = (req, res) ->

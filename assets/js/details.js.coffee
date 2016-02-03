@@ -28,8 +28,8 @@ $ ->
     row = $("<tr id='team-#{item.name}'>")
     row.append "<td>#{item.name}</td>"
     for i in [0..currentRound]
-      value = if item[i] then "tick" else "cross"
-      row.append "<td id='info-#{item.name}-#{i}'><img id='status-#{item.name}-#{i}' src='/assets/#{value}.png' height='25' width='25' /></td>"
+      item[i] = 'failure' if !item[i]
+      row.append "<td id='info-#{item.name}-#{i}'><img id='status-#{item.name}-#{i}' src='/assets/#{item[i]}.png' height='25' width='25' /></td>"
     table.append row
 
   updateInstructions = (roundNumber) ->
@@ -47,15 +47,12 @@ $ ->
     updateInstructions(roundNumber)
     rebuildTable()
 
-  getDetails()
-
   teamSocket = io.connect '/teams'
   teamSocket.on 'new team', (teamName) ->
     stop = false;
     for team in teams
       if team.name == teamName
         stop = true
-
     if !stop
       newTeam = {name: teamName}
       teams.push newTeam
@@ -67,3 +64,12 @@ $ ->
         index = i
     teams.splice(index, 1) if index
     $("#team-#{teamName}").remove()
+
+  challengeSocket = io.connect '/challenge'
+  challengeSocket.on 'result', (data) ->
+    $("#status-#{data.team}-#{data.round}").attr("src","/assets/#{data.status}.png")
+    for team in teams
+      if team.name == data.team
+        team[data.round] = data.status
+
+  getDetails()

@@ -3,6 +3,10 @@ connection = require './connection'
 round = require './round'
 checker = require '../challenges/checker'
 
+io = null
+exports.initIo = (_io) ->
+  io = _io
+
 exports.question = (req, res) ->
 
   connection.open (error, client) ->
@@ -27,6 +31,7 @@ exports.question = (req, res) ->
               if err
                 res.send(500, err)
               else
+                io.emit 'result', {team: challenge.team, round: round, status: 'working'} if challenge.count == 0
                 res.json challenge.question
 
 exports.answer = (req, res) ->
@@ -51,8 +56,9 @@ exports.answer = (req, res) ->
                 console.log "Answer -- #{team}"
                 console.log doc
                 console.log req.body
-                setResult client, res, round, team, gotItRight, doc.count, ->
+                setResult client, res, round, team, gotItRight, doc.count, (status) ->
                   client.close()
+                  io.emit 'result', {team: team, round: round, status: status} unless status == 'working'
                   if gotItRight
                     if doc.count >= requiredAttempts(round)
                       res.send(200, "OK")
@@ -68,15 +74,20 @@ setResult = (client, res, round, team, gotItRight, count, callback) ->
         client.close()
         res.send(500, err)
       else if doc
-        doc[round] = gotItRight && count == requiredAttempts(round)
+        unless gotItRight
+          doc[round] = 'failure'
+        else if count == requiredAttempts(round)
+          doc[round] = 'success'
+        else
+          doc[round] = 'working'
         collection.save doc, {safe:true}, (err, objects) ->
           if err
             client.close()
             res.send(500, err)
           else
-            callback()
+            callback(doc[round])
       else
-        callback()
+        callback(gotItRight ? 'success' : 'failure')
 
 requiredAttempts = (round) ->
   return 2 if round == 0

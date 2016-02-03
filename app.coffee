@@ -19,6 +19,7 @@ io = require('socket.io')(server)
 
 round.initIo io.of('/round')
 branch.initIo io.of('/teams')
+challenge.initIo io.of('/challenge')
 
 # all environments
 app.set 'port', process.env.PORT || 3000

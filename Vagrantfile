@@ -47,6 +47,7 @@ Vagrant.configure(2) do |config|
 
     cd /srv/git/whisper.git
     sudo git config http.receivepack true
+    sudo git config receive.denynonfastforwards false
 
     mkdir /vagrant/git-master
     cp -R /vagrant/initialGit-Ruby/* /vagrant/git-master/

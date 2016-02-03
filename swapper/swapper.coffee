@@ -10,12 +10,12 @@ gitOptions =
   cwd: process.cwd() + "/git-master"
 
 gitPull = (callback) ->
-  console.log "pull"
+  console.log "fetch"
   exec "git remote prune origin", gitOptions, (error, stdout, stderr) ->
-    exec "git pull --all", gitOptions, (error, stdout, stderr) ->
+    exec "git fetch --all", gitOptions, (error, stdout, stderr) ->
       callback()
 
-cycleBranches = (branches, callback) ->
+resetLocalBranches = (branches, callback) ->
   if branches.length == 0
     console.log "checkout master"
     exec "git checkout master", gitOptions, (error, stdout, stderr) ->
@@ -23,21 +23,16 @@ cycleBranches = (branches, callback) ->
   else
     console.log "checkout #{branches[0]}"
     exec "git checkout #{branches[0]}", gitOptions, (error, stdout, stderr) ->
-      cycleBranches branches.slice(1), callback
-
-deleteServerBranches = (branches, callback) ->
-  if branches.length == 0
-    callback()
-  else
-    exec "git push origin :#{branches[0]}", gitOptions, (error, stdout, stderr) ->
-      deleteServerBranches branches.slice(1), callback
+      exec "git reset origin/#{branches[0]}", gitOptions, (error, stdout, stderr) ->
+        resetLocalBranches branches.slice(1), callback
 
 renameLocalsToTemp = (branches, callback) ->
   if branches.length == 0
     callback()
   else
-    exec "git branch -m #{branches[0]} temp__#{branches[0]}", gitOptions, (error, stdout, stderr) ->
-      renameLocalsToTemp branches.slice(1), callback
+    exec "git branch --unset-upstream #{branches[0]}", gitOptions, (error, stdout, stderr) ->
+      exec "git branch -m #{branches[0]} temp__#{branches[0]}", gitOptions, (error, stdout, stderr) ->
+        renameLocalsToTemp branches.slice(1), callback
 
 renameLocalsFromTemp = (branches, targetBranches, callback) ->
   if branches.length == 0
@@ -52,16 +47,9 @@ reconnectBranches = (branches, callback) ->
   else
     console.log "checkout #{branches[0]} and stuff"
     exec "git checkout #{branches[0]}", gitOptions, (error, stdout, stderr) ->
-      exec "git push -u origin #{branches[0]}", gitOptions, (error, stdout, stderr) ->
+      exec "git push -uf origin #{branches[0]}", gitOptions, (error, stdout, stderr) ->
         reconnectBranches branches.slice(1), callback
 
-deleteLocalBranches = (branches, callback) ->
-  if branches.length == 0
-    callback()
-  else
-    console.log "clear branch #{branches[0]}"
-    exec "git branch -d #{branches[0]}", gitOptions, (error, stdout, stderr) ->
-      deleteLocalBranches branches.slice(1), callback
 
 checkoutMaster = (callback) ->
   console.log "checkout master"
@@ -71,16 +59,14 @@ checkoutMaster = (callback) ->
 swapBranches = (branches, targetBranches, callback) ->
   syncLock.lock ->
     checkoutMaster ->
-      deleteLocalBranches branches, ->
-        gitPull ->
-          cycleBranches branches, ->
-            deleteServerBranches branches, ->
-              renameLocalsToTemp branches, ->
-                renameLocalsFromTemp branches, targetBranches, ->
-                  reconnectBranches branches, ->
-                    checkoutMaster ->
-                      callback()
-                      syncLock.release()
+      gitPull ->
+        resetLocalBranches branches, ->
+          renameLocalsToTemp branches, ->
+            renameLocalsFromTemp branches, targetBranches, ->
+              reconnectBranches branches, ->
+                checkoutMaster ->
+                  callback()
+                  syncLock.release()
 
 getBranchList = (callback) ->
   syncLock.lock ->

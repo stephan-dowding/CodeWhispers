@@ -11,8 +11,9 @@ gitOptions =
 
 gitPull = (callback) ->
   console.log "pull"
-  exec "git pull --all", gitOptions, (error, stdout, stderr) ->
-    callback()
+  exec "git remote prune origin", gitOptions, (error, stdout, stderr) ->
+    exec "git pull --all", gitOptions, (error, stdout, stderr) ->
+      callback()
 
 cycleBranches = (branches, callback) ->
   if branches.length == 0

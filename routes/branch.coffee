@@ -62,7 +62,7 @@ ensureExists = (client, branches, callback) ->
         else if doc
           ensureExists client, branches.slice(1), callback
         else
-          collection.save {name: branches[0], 0: false}, {safe:true}, (err, objects) ->
+          collection.save {name: branches[0]}, {safe:true}, (err, objects) ->
             if err
               client.close()
             else

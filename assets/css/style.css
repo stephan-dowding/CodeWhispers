@@ -7,5 +7,5 @@ a {
   color: #00B7FF;
 }
 
-.pane1      { width: 50%; float: left; }
-.instructions { width: 50%; float: right; }
+.leftPane      { width: 50%; float: left; }
+.rightPane { width: 50%; float: right; }

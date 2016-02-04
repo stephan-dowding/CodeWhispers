@@ -39,7 +39,7 @@ app.use(require("connect-assets")({
 
 app.get '/dashboard', routes.dashboard
 app.get '/', routes.whisper
-app.get '/question', routes.question
+app.get '/question/:round', routes.question
 app.get '/branches', branch.list
 app.get '/details', branch.getDetails
 app.get '/branches/swap', branch.swap

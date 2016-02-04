@@ -1,7 +1,10 @@
 extends layout
 
 block content
+  script(type='text/javascript', src='/socket.io/socket.io.js')
+  != js("instructions")
+
   h1=title
   h3 Welcome to #{title}
 
-  |!{ q }
+  div.instructions

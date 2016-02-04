@@ -36,7 +36,7 @@ $ ->
     if currentRound != roundNumber
       currentRound = roundNumber
       $('.roundNumber').text currentRound
-      $.get '/question', (data) ->
+      $.get "/question/#{currentRound}", (data) ->
         instructions = $('.instructions')
         instructions.children().remove()
         instructions.append(data)

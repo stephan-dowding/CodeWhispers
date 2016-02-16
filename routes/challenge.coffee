@@ -1,4 +1,3 @@
-mongo = require 'mongodb'
 connection = require './connection'
 round = require './round'
 checker = require '../challenges/checker'
@@ -10,7 +9,7 @@ exports.initIo = (_io) ->
 exports.question = (req, res) ->
 
   connection.open (error, client) ->
-    round.getRound client, res, (round) ->
+    round.getRound client, (round) ->
 
       challenge = generateQandA(round)
       challenge.team = req.params['team']
@@ -38,7 +37,7 @@ exports.answer = (req, res) ->
   team = req.params['team']
 
   connection.open (error, client) ->
-    round.getRound client, res, (round) ->
+    round.getRound client, (round) ->
 
       client.collection 'challenge', (err, collection) ->
         collection.findOne {team: team}, (err, doc) ->

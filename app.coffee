@@ -8,6 +8,7 @@ routes = require './routes/index'
 branch = require './routes/branch'
 challenge = require './routes/challenge'
 round = require './routes/round'
+action = require './routes/action'
 http = require 'http'
 path = require 'path'
 bodyParser = require('body-parser')
@@ -38,12 +39,15 @@ app.use(require("connect-assets")({
 }))
 
 app.get '/dashboard', routes.dashboard
+app.get '/control-panel', routes.controlPanel
 app.get '/', routes.whisper
 app.get '/question/:round', routes.question
 app.get '/branches', branch.list
 app.get '/details', branch.getDetails
-app.get '/branches/swap', branch.swap
-app.get '/round/:number', round.set
+app.post '/branches', branch.swap
+app.post '/round', round.set
+
+app.post '/action/next-round', action.nextRound
 
 app.get '/challenge/question/:team', challenge.question
 app.post '/challenge/answer/:team', challenge.answer

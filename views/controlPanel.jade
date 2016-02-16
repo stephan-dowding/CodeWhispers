@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  script(type='text/javascript', src='/socket.io/socket.io.js')
+  != js("controlPanel")
+  
+  button(id='nextRound') Next Round
+  
+  div#round
+    
+  div#swapping

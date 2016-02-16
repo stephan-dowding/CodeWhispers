@@ -66,7 +66,7 @@ Vagrant.configure(2) do |config|
     sudo pm2 start app.coffee -n whisper
     sudo pm2 startup systemd
 
-    wget --tries 10 --retry-connrefused -qO- http://localhost:3000/round/0
+    wget --tries 10 --retry-connrefused --post-data '{"number": 0}' --header 'Content-Type:application/json' -qO- http://localhost:3000/round
 
   SHELL
 

@@ -1,7 +1,6 @@
 swapper = require "../swapper/swapper"
 randomiser = require "../swapper/listRandomiser"
 
-mongo = require 'mongodb'
 connection = require './connection'
 
 round = require './round'
@@ -11,10 +10,16 @@ exports.initIo = (_io) ->
   io = _io
 
 exports.list = (req, res) ->
-  swapper.getBranchList (branches) ->
-    res.render 'branches',
-      title: "Code Whispers"
-      branches: branches
+  connection.open (error, client) ->
+    if error
+      client.close()
+      res.send(500, error)
+    else
+      getBranches client, (branches) ->
+        client.close()
+        res.render 'branches',
+          title: "Code Whispers"
+          branches: branches
 
 exports.getDetails = (req, res) ->
   connection.open (error, client) ->
@@ -22,24 +27,21 @@ exports.getDetails = (req, res) ->
       client.close()
       res.send(500, error)
     else
-      round.getRound client, res, (round) ->
+      round.getRound client, (round) ->
         sendBranchList client, res, round
 
 sendBranchList = (client, res, round) ->
-  getBranches client, res, (branches) ->
+  getBranches client, (branches) ->
     client.close()
     res.send
       round: round
       branches: branches
 
-getBranches = (client, res, callback) ->
+getBranches = (client, callback) ->
   branches = []
   client.collection 'branches', (err, collection) ->
     collection.find().each (err, doc) ->
-      if err
-        client.close()
-        res.send(500, err)
-      else if doc
+      if doc
         branches.push doc
       else
         callback(branches)
@@ -105,15 +107,21 @@ exports.swap = (req, res) ->
       client.close()
       res.send(500, error)
     else
-      getBranches client, res, (branches) ->
-        sourceBranches = branches.map (item) ->
-          item.name
-        targetBranches = randomiser.randomise sourceBranches
-        swapper.swapBranches sourceBranches, targetBranches, ->
-          client.close()
-          res.render 'branchMapping',
-            title: "Code Whispers"
-            branchMapping: entangle sourceBranches, targetBranches
+      performSwap client, (branchMapping) ->
+        client.close()
+        res.render 'branchMapping',
+          title: "Code Whispers"
+          branchMapping: branchMapping
+
+performSwap = (client, callback) ->
+  getBranches client, (branches) ->
+    sourceBranches = branches.map (item) -> item.name
+    targetBranches = randomiser.randomise sourceBranches
+    swapper.swapBranches sourceBranches, targetBranches, ->
+      branchMapping = entangle sourceBranches, targetBranches
+      callback(branchMapping)
+
+exports.performSwap = performSwap
 
 entangle = (origin, destination) ->
   mapping = []

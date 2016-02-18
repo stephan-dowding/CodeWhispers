@@ -7,86 +7,80 @@ exports.initIo = (_io) ->
   io = _io
 
 exports.question = (req, res) ->
-
-  connection.open (error, client) ->
+  context = {}
+  connection.open()
+  .then (client) ->
+    context.client = client
     round.getRound client
-    .then (round) ->
-      challenge = generateQandA(round)
-      challenge.team = req.params['team']
+  .then (round) ->
+    context.round = round
+    challenge = generateQandA(round)
+    challenge.team = req.params['team']
+    context.challenge = challenge
+    context.collection = context.client.collection 'challenge'
+    context.collection.findOne {team: challenge.team}
+  .then (oldChallenge) ->
+    if oldChallenge
+      context.challenge._id = oldChallenge._id
+      context.challenge.count = oldChallenge.count + 1 if oldChallenge.result && oldChallenge.count < requiredAttempts(context.round) && oldChallenge.round == context.round
+    context.collection.save context.challenge, {safe:true}
+  .then ->
+    io.emit 'result', {team: context.challenge.team, round: context.round, status: 'working'} if context.challenge.count == 0
+    res.json context.challenge.question
+  .catch (error) ->
+    console.log error
+    res.status(500).json(error)
+  .finally ->
+    context.client.close() if context.client
 
-      client.collection 'challenge', (err, collection) ->
-        collection.findOne {team: challenge.team}, (err, old_challenge) ->
-          if err
-            client.close()
-            res.send(500, err)
-          else
-            if old_challenge
-              challenge._id = old_challenge._id
-              challenge.count = old_challenge.count + 1 if old_challenge.result && old_challenge.count < requiredAttempts(round) && old_challenge.round == round
-            console.log "Challenge -- #{challenge.team}"
-            console.log challenge
-            collection.save challenge, {safe:true}, (err, objects) ->
-              client.close()
-              if err
-                res.send(500, err)
-              else
-                io.emit 'result', {team: challenge.team, round: round, status: 'working'} if challenge.count == 0
-                res.json challenge.question
 
 exports.answer = (req, res) ->
   team = req.params['team']
-
-  connection.open (error, client) ->
+  context = {}
+  connection.open()
+  .then (client) ->
+    context.client = client
     round.getRound client
-    .then (round) ->
-      client.collection 'challenge', (err, collection) ->
-        collection.findOne {team: team}, (err, doc) ->
-          if err
-            client.close()
-            res.send(500, err)
-          else
-            gotItRight = correct(req.body, doc.answer, round)
-            doc.result = gotItRight
-            collection.save doc, {safe:true}, (err, objects) ->
-              if err
-                client.close()
-                res.send(500, err)
-              else
-                console.log "Answer -- #{team}"
-                console.log doc
-                console.log req.body
-                setResult client, res, round, team, gotItRight, doc.count, (status) ->
-                  client.close()
-                  io.emit 'result', {team: team, round: round, status: status} unless status == 'working'
-                  if gotItRight
-                    if doc.count >= requiredAttempts(round)
-                      res.send(200, "OK")
-                    else
-                      res.redirect(303, "/routes/challenge/#{team}")
-                  else
-                    res.status(418).json({yourAnswer: req.body, correctAnswer: doc.answer})
-
-setResult = (client, res, round, team, gotItRight, count, callback) ->
-  client.collection 'branches', (err, collection) ->
-    collection.findOne {name: team}, (err, doc) ->
-      if err
-        client.close()
-        res.send(500, err)
-      else if doc
-        unless gotItRight
-          doc[round] = 'failure'
-        else if count == requiredAttempts(round)
-          doc[round] = 'success'
-        else
-          doc[round] = 'working'
-        collection.save doc, {safe:true}, (err, objects) ->
-          if err
-            client.close()
-            res.send(500, err)
-          else
-            callback(doc[round])
+  .then (round) ->
+    context.round = round
+    context.collection = context.client.collection 'challenge'
+    context.collection.findOne {team: team}
+  .then (doc) ->
+    doc.result = correct(req.body, doc.answer, context.round)
+    context.doc = doc
+    context.collection.save doc, {safe:true}
+  .then ->
+    setResult context.client, context.round, team, context.doc.result, context.doc.count
+  .then (status) ->
+    io.emit 'result', {team: team, round: context.round, status: status} unless status == 'working'
+    if context.doc.result
+      if context.doc.count >= requiredAttempts(context.round)
+        res.send(200, "OK")
       else
-        callback(gotItRight ? 'success' : 'failure')
+        res.redirect(303, "/routes/challenge/#{team}")
+    else
+      res.status(418).json({yourAnswer: req.body, correctAnswer: context.doc.answer})
+  .catch (error) ->
+    console.log error
+    res.status(500).json(error)
+  .finally ->
+    context.client.close() if context.client
+
+setResult = (client, round, team, gotItRight, count) ->
+  collection = client.collection 'branches'
+  status = null
+  collection.findOne {name: team}
+  .then (doc) ->
+    unless gotItRight
+      status = 'failure'
+    else if count == requiredAttempts(round)
+      status = 'success'
+    else
+      status = 'working'
+    doc[round] = status
+    collection.save doc, {safe:true}
+  .then ->
+    status
 
 requiredAttempts = (round) ->
   return 2 if round == 0

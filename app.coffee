@@ -3,6 +3,7 @@
 # Module dependencies.
 ##
 
+require 'promise.prototype.finally'
 express = require 'express'
 routes = require './routes/index'
 branch = require './routes/branch'

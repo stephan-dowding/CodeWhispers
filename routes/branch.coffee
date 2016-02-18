@@ -27,7 +27,8 @@ exports.getDetails = (req, res) ->
       client.close()
       res.send(500, error)
     else
-      round.getRound client, (round) ->
+      round.getRound client
+      .then (round) ->
         sendBranchList client, res, round
 
 sendBranchList = (client, res, round) ->

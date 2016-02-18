@@ -9,8 +9,8 @@ exports.initIo = (_io) ->
 exports.question = (req, res) ->
 
   connection.open (error, client) ->
-    round.getRound client, (round) ->
-
+    round.getRound client
+    .then (round) ->
       challenge = generateQandA(round)
       challenge.team = req.params['team']
 
@@ -37,8 +37,8 @@ exports.answer = (req, res) ->
   team = req.params['team']
 
   connection.open (error, client) ->
-    round.getRound client, (round) ->
-
+    round.getRound client
+    .then (round) ->
       client.collection 'challenge', (err, collection) ->
         collection.findOne {team: team}, (err, doc) ->
           if err

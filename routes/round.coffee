@@ -4,54 +4,54 @@ io = null
 exports.initIo = (_io) ->
   io = _io
   io.on 'connection', (socket) ->
-    connection.open (error, client) ->
-      exports.getRound client, (round) ->
-        client.close()
-        socket.emit('new round', round)
+    context = {}
+    connection.open()
+    .then (client) ->
+      context.client = client
+      getRound context.client
+    .then (round) ->
+      socket.emit('new round', round)
+    .catch (error) ->
+      console.log error
+    .finally ->
+      context.client.close() if context.client
+
 
 exports.set = (req, res) ->
   number = req.body.number
-  connection.open (error, client) ->
-    setRound number, client, ->
-      client.close()
-      res.status(200).send("Round: #{number}")
+  context = {}
+  connection.open()
+  .then (client) ->
+    context.client = client
+    setRound number, client
+  .then ->
+    res.status(200).send("Round: #{number}")
+  .catch (error) ->
+    res.status(500).send(error)
+  .finally ->
+    context.client.close() if context.client
 
-exports.increment = (client, callback) ->
-  getRound client, (round) ->
+exports.increment = (client) ->
+  getRound client
+  .then (round) ->
     round += 1
-    setRound round, client, ->
-      callback round
+    setRound round, client
 
-setRound = (number, client, callback) ->
-  client.collection 'challenge', (err, collection) ->
-    collection.remove {}, {safe:true}, (err, objects) ->
-      client.collection 'round', (err, round) ->
-        round.remove {}, {safe:true}, (err, objects) ->
-          round.save {round: number}, {safe:true}, (err, objects) ->
-            updateBranchEntries client, number, ->
-              io.emit('new round', number)
-              callback()
+setRound = (number, client) ->
+  challenges = client.collection 'challenge'
+  round = client.collection 'round'
+  challenges.remove {}, {safe:true}
+  .then ->
+    round.remove {}, {safe:true}
+  .then ->
+    round.save {round: number}, {safe:true}
+  .then ->
+    io.emit('new round', number)
+    number
 
-updateBranchEntries = (client, round, callback) ->
-  branches = []
-  client.collection 'branches', (err, collection) ->
-    collection.find().each (err, doc) ->
-      if doc
-        branches.push doc
-      else
-        updateBranchEntry collection, client, branches, round, callback
+getRound = (client) ->
+  roundCollection = client.collection 'round'
+  roundCollection.findOne {}
+  .then (doc) -> doc.round
 
-updateBranchEntry = (collection, client, branches, round, callback) ->
-  if branches.length == 0
-    callback()
-  else
-    branch = branches[0]
-    branch[round] = false unless branch[round]
-    collection.save branch, {safe:true}, (err, objects) ->
-      updateBranchEntry collection, client, branches.slice(1), round, callback
-
-getRound = (client, callback) ->
-  client.collection 'round', (err, round) ->
-    round.findOne {}, (err, doc) ->
-      callback doc.round
 exports.getRound = getRound

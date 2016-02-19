@@ -54,9 +54,12 @@ cleanBranches = (rawBranches) ->
 
 exports.add = (req, res) ->
   name = req.params['team']
-  ensureExists [name], ->
+  ensureExists [name]
+  .then ->
     io.emit('new team', name)
-    res.send(200)
+    res.status(200).send()
+  .catch (error) ->
+    res.status(500).json(error)
 
 exports.remove = (req, res) ->
   name = req.params['team']

@@ -10,112 +10,73 @@ exports.initIo = (_io) ->
   io = _io
 
 exports.list = (req, res) ->
-  connection.open (error, client) ->
-    if error
-      client.close()
-      res.send(500, error)
-    else
-      getBranches client, (branches) ->
-        client.close()
-        res.render 'branches',
-          title: "Code Whispers"
-          branches: branches
+  getBranches()
+  .then (branches) ->
+    res.render 'branches',
+      title: "Code Whispers"
+      branches: branches
+  .catch (error) ->
+    res.status(500).json(error)
 
 exports.getDetails = (req, res) ->
-  connection.open (error, client) ->
-    if error
-      client.close()
-      res.send(500, error)
-    else
-      round.getRound client
-      .then (round) ->
-        sendBranchList client, res, round
-
-sendBranchList = (client, res, round) ->
-  getBranches client, (branches) ->
-    client.close()
+  Promise.all [round.getRound(), getBranches()]
+  .then ([round, branches]) ->
     res.send
       round: round
       branches: branches
+  .catch (error) ->
+    res.status(500).json(error)
 
-getBranches = (client, callback) ->
-  branches = []
-  client.collection 'branches', (err, collection) ->
-    collection.find().each (err, doc) ->
-      if doc
-        branches.push doc
-      else
-        callback(branches)
+getBranches =  ->
+  collection = connection.collection 'branches'
+  collection.find().toArray()
 
 exports.rescan = ->
   swapper.getBranchList (branches) ->
-    connection.open (error, client) ->
-      ensureExists client, branches, ->
-        cleanBranches client, branches, ->
-          client.close()
+    ensureExists branches
+    .then ->
+      cleanBranches branches
 
-ensureExists = (client, branches, callback) ->
+ensureExists = (branches) ->
   if branches.length == 0
-    callback()
+    Promise.resolve()
   else
-    client.collection 'branches', (err, collection) ->
-      collection.findOne {name: branches[0]}, (err, doc) ->
-        if err
-          client.close()
-        else if doc
-          ensureExists client, branches.slice(1), callback
-        else
-          collection.save {name: branches[0]}, {safe:true}, (err, objects) ->
-            if err
-              client.close()
-            else
-              ensureExists client, branches.slice(1), callback
+    collection = connection.collection 'branches'
+    collection.findOne {name: branches[0]}
+    .then (doc) ->
+      collection.save {name: branches[0]}, {safe:true} unless doc
+    .then ->
+      ensureExists branches.slice(1)
 
-cleanBranches = (client, rawBranches, callback) ->
-  client.collection 'branches', (err, collection) ->
-    collection.remove {name: {$nin: rawBranches}}, {safe:true}, (err, doc) ->
-      if err
-        client.close()
-      else
-        callback()
+cleanBranches = (rawBranches) ->
+  collection = connection.collection 'branches'
+  collection.remove {name: {$nin: rawBranches}}, {safe:true}
 
 exports.add = (req, res) ->
   name = req.params['team']
-  connection.open (error, client) ->
-    if error
-      client.close()
-      res.send(500, error)
-    else
-      ensureExists client, [name], ->
-        io.emit('new team', name)
-        res.send(200)
+  ensureExists [name], ->
+    io.emit('new team', name)
+    res.send(200)
 
 exports.remove = (req, res) ->
   name = req.params['team']
-  connection.open (error, client) ->
-    if error
-      client.close()
-      res.send(500, error)
-    else
-      client.collection 'branches', (err, collection) ->
-        collection.remove {name: name}, {safe:true}, (err, doc) ->
-          io.emit('remove team', name)
-          res.send(200)
+  collection = connection.collection 'branches'
+  collection.remove {name: name}, {safe:true}
+  .then (doc) ->
+    io.emit('remove team', name)
+    res.send(200)
+  .catch (error) ->
+    res.status(500).json(error)
 
 exports.swap = (req, res) ->
-  connection.open (error, client) ->
-    if error
-      client.close()
-      res.send(500, error)
-    else
-      performSwap client, (branchMapping) ->
-        client.close()
-        res.render 'branchMapping',
-          title: "Code Whispers"
-          branchMapping: branchMapping
+  performSwap (branchMapping) ->
+    res.render 'branchMapping',
+      title: "Code Whispers"
+      branchMapping: branchMapping
 
-performSwap = (client, callback) ->
-  getBranches client, (branches) ->
+performSwap = (callback) ->
+  getBranches()
+  .then (branches) ->
     sourceBranches = branches.map (item) -> item.name
     targetBranches = randomiser.randomise sourceBranches
     swapper.swapBranches sourceBranches, targetBranches, ->

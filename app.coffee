@@ -53,11 +53,11 @@ app.delete '/teams/:team', branch.remove
 
 require('./routes/connection').init()
 .then ->
+  branch.rescan()
+.then ->
   round.initIo io.of('/round')
   branch.initIo io.of('/teams')
   challenge.initIo io.of('/challenge')
-
-  branch.rescan()
 
   server.listen app.get('port'), ->
     console.log 'Express server listening on port ' + app.get('port')

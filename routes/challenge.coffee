@@ -8,17 +8,14 @@ exports.initIo = (_io) ->
 
 exports.question = (req, res) ->
   context = {}
-  connection.open()
-  .then (client) ->
-    context.client = client
-    round.getRound client
+  collection = connection.collection 'challenge'
+  round.getRound()
   .then (round) ->
     context.round = round
     challenge = generateQandA(round)
     challenge.team = req.params['team']
     context.challenge = challenge
-    context.collection = context.client.collection 'challenge'
-    context.collection.findOne {team: challenge.team}
+    collection.findOne {team: challenge.team}
   .then (oldChallenge) ->
     if oldChallenge
       context.challenge._id = oldChallenge._id
@@ -30,27 +27,22 @@ exports.question = (req, res) ->
   .catch (error) ->
     console.log error
     res.status(500).json(error)
-  .finally ->
-    context.client.close() if context.client
 
 
 exports.answer = (req, res) ->
   team = req.params['team']
+  collection = connection.collection 'challenge'
   context = {}
-  connection.open()
-  .then (client) ->
-    context.client = client
-    round.getRound client
+  round.getRound client
   .then (round) ->
     context.round = round
-    context.collection = context.client.collection 'challenge'
-    context.collection.findOne {team: team}
+    collection.findOne {team: team}
   .then (doc) ->
     doc.result = correct(req.body, doc.answer, context.round)
     context.doc = doc
-    context.collection.save doc, {safe:true}
+    collection.save doc, {safe:true}
   .then ->
-    setResult context.client, context.round, team, context.doc.result, context.doc.count
+    setResult context.round, team, context.doc.result, context.doc.count
   .then (status) ->
     io.emit 'result', {team: team, round: context.round, status: status} unless status == 'working'
     if context.doc.result
@@ -63,11 +55,9 @@ exports.answer = (req, res) ->
   .catch (error) ->
     console.log error
     res.status(500).json(error)
-  .finally ->
-    context.client.close() if context.client
 
-setResult = (client, round, team, gotItRight, count) ->
-  collection = client.collection 'branches'
+setResult = (round, team, gotItRight, count) ->
+  collection = connection.collection 'branches'
   status = null
   collection.findOne {name: team}
   .then (doc) ->

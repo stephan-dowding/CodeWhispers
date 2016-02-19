@@ -12,7 +12,6 @@
     "jade": "1.11.0",
     "kerberos": "0.0.18",
     "mongodb": "2.1.7",
-    "promise.prototype.finally": "^1.0.1",
     "socket.io": "1.4.5"
   },
   "devDependencies": {

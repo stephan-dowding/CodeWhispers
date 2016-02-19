@@ -3,7 +3,6 @@
 # Module dependencies.
 ##
 
-require 'promise.prototype.finally'
 express = require 'express'
 routes = require './routes/index'
 branch = require './routes/branch'
@@ -18,10 +17,6 @@ app = express()
 
 server = http.createServer(app)
 io = require('socket.io')(server)
-
-round.initIo io.of('/round')
-branch.initIo io.of('/teams')
-challenge.initIo io.of('/challenge')
 
 # all environments
 app.set 'port', process.env.PORT || 3000
@@ -56,7 +51,16 @@ app.post '/challenge/answer/:team', challenge.answer
 app.put '/teams/:team', branch.add
 app.delete '/teams/:team', branch.remove
 
-branch.rescan()
+require('./routes/connection').init()
+.then ->
+  round.initIo io.of('/round')
+  branch.initIo io.of('/teams')
+  challenge.initIo io.of('/challenge')
 
-server.listen app.get('port'), ->
-  console.log 'Express server listening on port ' + app.get('port')
+  branch.rescan()
+
+  server.listen app.get('port'), ->
+    console.log 'Express server listening on port ' + app.get('port')
+.catch (error) ->
+  console.error error
+  process.exit 1

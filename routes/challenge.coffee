@@ -8,14 +8,14 @@ exports.initIo = (_io) ->
 
 exports.question = (req, res) ->
   context = {}
-  collection = connection.collection 'challenge'
+  challengeCollection = connection.collection 'challenge'
   round.getRound()
   .then (round) ->
     context.round = round
     challenge = generateQandA(round)
     challenge.team = req.params['team']
     context.challenge = challenge
-    collection.findOne {team: challenge.team}
+    challengeCollection.findOne {team: challenge.team}
   .then (oldChallenge) ->
     if oldChallenge
       context.challenge._id = oldChallenge._id
@@ -31,16 +31,16 @@ exports.question = (req, res) ->
 
 exports.answer = (req, res) ->
   team = req.params['team']
-  collection = connection.collection 'challenge'
+  challengeCollection = connection.collection 'challenge'
   context = {}
-  round.getRound client
+  round.getRound()
   .then (round) ->
     context.round = round
-    collection.findOne {team: team}
+    challengeCollection.findOne {team: team}
   .then (doc) ->
     doc.result = correct(req.body, doc.answer, context.round)
     context.doc = doc
-    collection.save doc, {safe:true}
+    challengeCollection.save doc, {safe:true}
   .then ->
     setResult context.round, team, context.doc.result, context.doc.count
   .then (status) ->
@@ -57,9 +57,9 @@ exports.answer = (req, res) ->
     res.status(500).json(error)
 
 setResult = (round, team, gotItRight, count) ->
-  collection = connection.collection 'branches'
+  branchesCollection = connection.collection 'branches'
   status = null
-  collection.findOne {name: team}
+  branchesCollection.findOne {name: team}
   .then (doc) ->
     unless gotItRight
       status = 'failure'
@@ -68,7 +68,7 @@ setResult = (round, team, gotItRight, count) ->
     else
       status = 'working'
     doc[round] = status
-    collection.save doc, {safe:true}
+    branchesCollection.save doc, {safe:true}
   .then ->
     status
 

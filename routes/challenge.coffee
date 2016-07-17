@@ -47,7 +47,7 @@ exports.answer = (req, res) ->
       io.emit 'result', {team: team, round: context.round, status: status} unless status == 'working'
       if context.doc.result
         if context.doc.count >= requiredAttempts(context.round)
-          res.send(200, "OK")
+          res.status(200).send("OK")
         else
           res.redirect(303, "/routes/challenge/#{team}")
       else

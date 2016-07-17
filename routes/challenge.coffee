@@ -20,7 +20,7 @@ exports.question = (req, res) ->
       if oldChallenge
         context.challenge._id = oldChallenge._id
         context.challenge.count = oldChallenge.count + 1 if oldChallenge.result && oldChallenge.count < requiredAttempts(context.round) && oldChallenge.round == context.round
-      context.collection.save context.challenge, {safe:true}
+      challengeCollection.save context.challenge, {safe:true}
     .then ->
       io.emit 'result', {team: context.challenge.team, round: context.round, status: 'working'} if context.challenge.count == 0
       res.json context.challenge.question

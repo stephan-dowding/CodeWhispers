@@ -1,6 +1,13 @@
 Build Status: [![Build Status](https://snap-ci.com/stephan-dowding/CodeWhispers/branch/master/build_image)](https://snap-ci.com/stephan-dowding/CodeWhispers/branch/master)
 
-At some point explain how to set up the server etc...
+# Setup the server
+`vagrant up`
+
+# Dashboard to project on big screen
+`192.168.33.10/dashboard`
+
+# Admin console to move the rounds
+`192.168.33.10/control-panel`
 
 
 # The Git magic:
@@ -71,3 +78,7 @@ git reset --hard origin/$one
 git daemon --enable=receive-pack --interpolated-path=$path_to_repo
 git clone git://$host/ cloneName
 ```
+
+
+# CodeWhispers meta development
+* run `vagrant up` and make sure the round 0 is running at: `192.168.33.10`

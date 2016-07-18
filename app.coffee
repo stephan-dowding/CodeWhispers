@@ -52,15 +52,15 @@ app.put '/teams/:team', branch.add
 app.delete '/teams/:team', branch.remove
 
 require('./routes/connection').init()
-.then ->
-  branch.rescan()
-.then ->
-  round.initIo io.of('/round')
-  branch.initIo io.of('/teams')
-  challenge.initIo io.of('/challenge')
+  .then ->
+    branch.rescan()
+  .then ->
+    round.initIo io.of('/round')
+    branch.initIo io.of('/teams')
+    challenge.initIo io.of('/challenge')
 
-  server.listen app.get('port'), ->
-    console.log 'Express server listening on port ' + app.get('port')
-.catch (error) ->
-  console.error error
-  process.exit 1
+    server.listen app.get('port'), ->
+      console.log 'Express server listening on port ' + app.get('port')
+  .catch (error) ->
+    console.error error
+    process.exit 1

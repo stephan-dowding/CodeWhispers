@@ -82,3 +82,4 @@ git clone git://$host/ cloneName
 
 # CodeWhispers meta development
 * run `vagrant up` and make sure the round 0 is running at: `192.168.33.10`
+* run tests with `./node_modules/.bin/mocha -u exports test/`

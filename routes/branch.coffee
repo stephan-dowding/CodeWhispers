@@ -42,9 +42,9 @@ ensureExists = (branches) ->
     Promise.resolve()
   else
     branchesCollection = connection.collection 'branches'
-    branchesCollection.findOne {name: branches[0]}
+    branchesCollection.findOne({name: branches[0]})
       .then (doc) ->
-        branchesCollection.save {name: branches[0]}, {safe:true} unless doc
+        branchesCollection.save({name: branches[0]}, {safe:true}) unless doc
       .then ->
         ensureExists(branches.slice(1))
 

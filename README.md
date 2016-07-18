@@ -3,6 +3,9 @@ Build Status: [![Build Status](https://snap-ci.com/stephan-dowding/CodeWhispers/
 # Setup the server
 `vagrant up`
 
+# Bootstrap script for ubuntu box
+`setup-box.sh`
+
 # Dashboard to project on big screen
 `192.168.33.10/dashboard`
 

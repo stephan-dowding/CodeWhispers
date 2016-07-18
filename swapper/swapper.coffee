@@ -21,7 +21,7 @@ resetLocalBranches = (branches, callback) ->
   else
     console.log "checkout #{branches[0]}"
     exec "git checkout #{branches[0]}", gitOptions, (error, stdout, stderr) ->
-      exec "git reset origin/#{branches[0]}", gitOptions, (error, stdout, stderr) ->
+      exec "git pull origin #{branches[0]}", gitOptions, (error, stdout, stderr) ->
         resetLocalBranches branches.slice(1), callback
 
 renameLocalsToTemp = (branches, callback) ->

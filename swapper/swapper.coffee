@@ -17,9 +17,7 @@ gitPull = (callback) ->
 
 resetLocalBranches = (branches, callback) ->
   if branches.length == 0
-    console.log "checkout master"
-    exec "git checkout master", gitOptions, (error, stdout, stderr) ->
-      callback()
+    checkoutMaster(callback)
   else
     console.log "checkout #{branches[0]}"
     exec "git checkout #{branches[0]}", gitOptions, (error, stdout, stderr) ->
@@ -45,7 +43,7 @@ renameLocalsFromTemp = (branches, targetBranches, callback) ->
 
 reconnectBranches = (branches, callback) ->
   if branches.length == 0
-    callback()
+    checkoutMaster(callback)
   else
     console.log "pushing #{branches[0]} to origin"
     exec "git checkout #{branches[0]}", gitOptions, (error, stdout, stderr) ->
@@ -66,9 +64,8 @@ swapBranches = (branches, targetBranches, callback) ->
           renameLocalsToTemp branches, ->
             renameLocalsFromTemp branches, targetBranches, ->
               reconnectBranches branches, ->
-                checkoutMaster ->
-                  callback()
-                  syncLock.release()
+                callback()
+                syncLock.release()
 
 getBranchList = (callback) ->
   syncLock.lock ->

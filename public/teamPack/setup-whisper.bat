@@ -11,7 +11,7 @@ if "%2" == "" goto doit
 
 
 :doit
-  git clone http://192.168.33.10/git/whisper.git %1
+  git clone "http://%CODE_WHISPER_HOST%/git/whisper.git" %1
   cd %1
   git checkout -b %1
   git push -u origin %1

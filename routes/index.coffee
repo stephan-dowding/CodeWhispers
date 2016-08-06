@@ -8,11 +8,11 @@ exports.controlPanel = (req, res) ->
 
 exports.whisper = (req, res) ->
   round.getRound()
-  .then (roundNumber) ->
-    res.render "q#{roundNumber}", (err, q) ->
-      res.render 'instructions', { title: 'CodeWhispers', q: q }
-  .catch (error) ->
-    res.status(500).send(error)
+    .then (roundNumber) ->
+      res.render "q#{roundNumber}", (err, q) ->
+        res.render('instructions', { title: 'CodeWhispers', q: q })
+    .catch (error) ->
+      res.status(500).send(error)
 
 exports.question = (req, res) ->
   roundNumber = req.params['round']

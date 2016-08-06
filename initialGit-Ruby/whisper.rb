@@ -15,14 +15,14 @@ end
 
 
 
-
+CODE_WHISPER_HOST = "192.168.33.10"
 def getQuestion
-  uri = URI("http://192.168.33.10/challenge/question/#{@git_branch}")
+  uri = URI("http://#{CODE_WHISPER_HOST}/challenge/question/#{@git_branch}")
   JSON.parse(Net::HTTP.get(uri))
 end
 
 def sendAnswer(answer)
-  uri = URI("http://192.168.33.10/challenge/answer/#{@git_branch}")
+  uri = URI("http://#{CODE_WHISPER_HOST}/challenge/answer/#{@git_branch}")
 
   json_headers = {"Content-Type" => "application/json",
                 "Accept" => "application/json"}

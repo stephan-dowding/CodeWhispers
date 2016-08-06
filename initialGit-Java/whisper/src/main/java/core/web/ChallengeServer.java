@@ -22,9 +22,10 @@ public class ChallengeServer {
 
     private static HttpClient httpClient = HttpClientBuilder.create().build();
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    private static final String CODE_WHISPER_HOST = "192.168.33.10"
 
     public static JsonObject getQuestion() throws Exception {
-        HttpGet get = new HttpGet(String.format("http://192.168.33.10/challenge/question/%s", Util.branchName()));
+        HttpGet get = new HttpGet(String.format("http://"+ CODE_WHISPER_HOST +"/challenge/question/%s", Util.branchName()));
 
         get.setConfig(noRedirect());
         HttpResponse getResponse = httpClient.execute(get);
@@ -37,7 +38,7 @@ public class ChallengeServer {
     }
 
     public static void postAnswer(JsonObject answer) throws Exception {
-        HttpPost request = new HttpPost(String.format("http://192.168.33.10/challenge/answer/%s", Util.branchName()));
+        HttpPost request = new HttpPost(String.format("http://"+ CODE_WHISPER_HOST +"/challenge/answer/%s", Util.branchName()));
 
         request.setConfig(noRedirect());
 

@@ -11,65 +11,65 @@ exports.initIo = (_io) ->
 
 exports.list = (req, res) ->
   getBranches()
-  .then (branches) ->
-    res.render 'branches',
-      title: "Code Whispers"
-      branches: branches
-  .catch (error) ->
-    res.status(500).json(error)
+    .then (branches) ->
+      res.render 'branches',
+        title: "Code Whispers"
+        branches: branches
+    .catch (error) ->
+      res.status(500).json(error)
 
 exports.getDetails = (req, res) ->
   Promise.all [round.getRound(), getBranches()]
-  .then ([round, branches]) ->
-    res.send
-      round: round
-      branches: branches
-  .catch (error) ->
-    res.status(500).json(error)
+    .then ([round, branches]) ->
+      res.send
+        round: round
+        branches: branches
+    .catch (error) ->
+      res.status(500).json(error)
 
 getBranches =  ->
-  collection = connection.collection 'branches'
-  collection.find().toArray()
+  branchesCollection = connection.collection 'branches'
+  branchesCollection.find().toArray()
 
 exports.rescan = ->
   swapper.getBranchList (branches) ->
-    ensureExists branches
-    .then ->
-      cleanBranches branches
+    ensureExists(branches)
+      .then ->
+        cleanBranches(branches)
 
 ensureExists = (branches) ->
   if branches.length == 0
     Promise.resolve()
   else
-    collection = connection.collection 'branches'
-    collection.findOne {name: branches[0]}
-    .then (doc) ->
-      collection.save {name: branches[0]}, {safe:true} unless doc
-    .then ->
-      ensureExists branches.slice(1)
+    branchesCollection = connection.collection 'branches'
+    branchesCollection.findOne({name: branches[0]})
+      .then (doc) ->
+        branchesCollection.save({name: branches[0]}, {safe:true}) unless doc
+      .then ->
+        ensureExists(branches.slice(1))
 
 cleanBranches = (rawBranches) ->
-  collection = connection.collection 'branches'
-  collection.remove {name: {$nin: rawBranches}}, {safe:true}
+  branchesCollection = connection.collection 'branches'
+  branchesCollection.remove {name: {$nin: rawBranches}}, {safe:true}
 
 exports.add = (req, res) ->
   name = req.params['team']
-  ensureExists [name]
-  .then ->
-    io.emit('new team', name)
-    res.status(200).send()
-  .catch (error) ->
-    res.status(500).json(error)
+  ensureExists([name])
+    .then ->
+      io.emit('new team', name)
+      res.status(200).send()
+    .catch (error) ->
+      res.status(500).json(error)
 
 exports.remove = (req, res) ->
   name = req.params['team']
-  collection = connection.collection 'branches'
-  collection.remove {name: name}, {safe:true}
-  .then (doc) ->
-    io.emit('remove team', name)
-    res.send(200)
-  .catch (error) ->
-    res.status(500).json(error)
+  branchesCollection = connection.collection 'branches'
+  branchesCollection.remove({name: name}, {safe:true})
+    .then (doc) ->
+      io.emit('remove team', name)
+      res.send(200)
+    .catch (error) ->
+      res.status(500).json(error)
 
 exports.swap = (req, res) ->
   performSwap (branchMapping) ->
@@ -79,12 +79,12 @@ exports.swap = (req, res) ->
 
 performSwap = (callback) ->
   getBranches()
-  .then (branches) ->
-    sourceBranches = branches.map (item) -> item.name
-    targetBranches = randomiser.randomise sourceBranches
-    swapper.swapBranches sourceBranches, targetBranches, ->
-      branchMapping = entangle sourceBranches, targetBranches
-      callback(branchMapping)
+    .then (branches) ->
+      sourceBranches = branches.map (item) -> item.name
+      targetBranches = randomiser.randomise sourceBranches
+      swapper.swapBranches sourceBranches, targetBranches, ->
+        branchMapping = entangle sourceBranches, targetBranches
+        callback(branchMapping)
 
 exports.performSwap = performSwap
 

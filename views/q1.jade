@@ -5,14 +5,30 @@ p You are now ready to start adventuring!  You will additionally be sent a set o
 p The question server will provide:
   pre
     code.
-        {
-          start: ~integer~
-          instructions: ~string~
-        }
+      {
+        start: ~integer~
+        instructions: ~string~
+      }
+
+p Question example:
+  pre
+    code.
+      {
+        start: 0,
+        instructions: "FFFF"
+      }
 
 p The answer will expect:
   pre
     code.
       {
         end: ~integer~
+      }
+
+
+p Answer example:
+  pre
+    code.
+      {
+        end: 4
       }

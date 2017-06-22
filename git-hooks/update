@@ -31,7 +31,7 @@ case "$refname","$newrev_type" in
 	refs/heads/*,commit)
 		# branch
 		if [ "$oldrev" = "$zero" ]; then
-			if [[ "$refname" =~ ^refs/heads/(.+)$ ]]; then
+			if [[ "$refname" =~ ^refs/heads/([a-zA-Z0-9_-]+)$ ]]; then
 				echo "*** Creating a team: ${BASH_REMATCH[1]}"
 				wget --method=PUT -bqO- http://localhost:3000/teams/${BASH_REMATCH[1]}
 			else

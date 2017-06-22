@@ -12,14 +12,14 @@
     "jade": "1.11.0",
     "kerberos": "0.0.18",
     "mongodb": "2.1.7",
-    "socket.io": "1.4.5"
+    "socket.io": "1.4.5",
+    "coffee-script": "1.10.0"
   },
   "devDependencies": {
     "mocha": "2.3.4",
     "chai": "3.4.1",
     "chai-things": "0.2.0",
     "underscore": "1.8.3",
-    "mockery": "1.4.0",
-    "coffee-script": "1.10.0"
+    "mockery": "1.4.0"
   }
 }

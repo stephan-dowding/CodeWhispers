@@ -7,7 +7,7 @@
 # you're doing.
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "ubuntu/wily64"
+  config.vm.box = "ubuntu/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -23,6 +23,11 @@ Vagrant.configure(2) do |config|
   # using a specific IP.
   le_host = ENV['CODE_WHISPER_HOST'] || "192.168.33.10"
   config.vm.network "private_network", ip: le_host
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
-  config.vm.provision "shell", inline: File.read('./setup-box.sh')
+  config.vm.provision "shell", inline: <<-SHELL
+    cd /vagrant
+    sudo chmod 777 setup-box.sh
+    ./setup-box.sh
+  SHELL
 end

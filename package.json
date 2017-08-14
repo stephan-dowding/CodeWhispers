@@ -3,23 +3,23 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node app.js"
   },
   "dependencies": {
     "body-parser": "1.14.2",
     "connect-assets": "^5.1.0",
     "express": "4.13.3",
     "jade": "1.11.0",
-    "kerberos": "0.0.18",
+    "kerberos": "^0.0.23",
     "mongodb": "2.1.7",
-    "socket.io": "1.4.5",
-    "coffee-script": "1.10.0"
+    "socket.io": "1.4.5"
   },
   "devDependencies": {
-    "mocha": "2.3.4",
     "chai": "3.4.1",
     "chai-things": "0.2.0",
-    "underscore": "1.8.3",
-    "mockery": "1.4.0"
+    "mocha": "2.3.4",
+    "mockery": "1.4.0",
+    "underscore": "1.8.3"
   }
 }

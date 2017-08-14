@@ -11,7 +11,7 @@ curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 
 sudo apt-get update
 sudo apt-get install -y nodejs build-essential mongodb nginx git fcgiwrap libkrb5-dev yarn
-sudo npm install -g pm2 coffee-script
+sudo yarn global add pm2
 
 sudo rm -f /etc/nginx/sites-enabled/*
 
@@ -46,8 +46,8 @@ sudo ln -s $BASEPATH/git-hooks/update /srv/git/whisper.git/hooks
 
 cd $BASEPATH
 yarn install --production
-sudo pm2 install coffeescript
-sudo pm2 start app.coffee -n whisper
+sudo pm2 start npm -n whisper -- start
+sudo pm2 save
 sudo pm2 startup systemd
 
 wget --tries 10 --retry-connrefused --post-data '{"number": 0}' --header 'Content-Type:application/json' -qO- http://localhost:3000/round

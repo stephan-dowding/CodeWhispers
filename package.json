@@ -7,19 +7,26 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "body-parser": "1.14.2",
-    "connect-assets": "^5.1.0",
-    "express": "4.13.3",
-    "jade": "1.11.0",
+    "body-parser": "^1.17.2",
+    "connect-assets": "^5.4.0",
+    "express": "^4.15.4",
     "kerberos": "^0.0.23",
-    "mongodb": "2.1.7",
-    "socket.io": "1.4.5"
+    "mongodb": "^2.2.31",
+    "pug": "^2.0.0-rc.3",
+    "socket.io": "^2.0.3"
   },
   "devDependencies": {
-    "chai": "3.4.1",
-    "chai-things": "0.2.0",
-    "mocha": "2.3.4",
-    "mockery": "1.4.0",
-    "underscore": "1.8.3"
+    "babel-cli": "^6.24.1",
+    "babel-preset-node8": "^1.2.0",
+    "chai": "^4.1.1",
+    "chai-things": "^0.2.0",
+    "mocha": "^3.5.0",
+    "mockery": "^2.1.0",
+    "underscore": "^1.8.3"
+  },
+  "babel": {
+    "presets": [
+      "node8"
+    ]
   }
 }

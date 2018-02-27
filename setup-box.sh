@@ -4,14 +4,11 @@ BASEPATH=$PWD
 
 echo $BASEPATH
 
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
 
 sudo apt-get update
-sudo apt-get install -y nodejs build-essential mongodb nginx git fcgiwrap libkrb5-dev yarn
-sudo yarn global add pm2
+sudo apt-get install -y nodejs build-essential mongodb nginx git fcgiwrap libkrb5-dev
+sudo npm install -g pm2
 
 sudo rm -f /etc/nginx/sites-enabled/*
 
@@ -45,7 +42,7 @@ git push -u origin master
 sudo ln -s $BASEPATH/git-hooks/update /srv/git/whisper.git/hooks
 
 cd $BASEPATH
-yarn install --production
+npm install
 sudo pm2 start npm -n whisper -- start
 sudo pm2 save
 sudo pm2 startup systemd

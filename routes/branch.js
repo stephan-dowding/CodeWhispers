@@ -25,7 +25,7 @@ exports.list = function(req, res) {
 
 exports.getDetails = function(req, res) {
   Promise.all([round.getRound(), getBranches()])
-  .then(([branches, round]) =>
+  .then(([round, branches]) =>
     res.send({
       round: round,
       branches: branches

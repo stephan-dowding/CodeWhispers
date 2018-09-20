@@ -4,7 +4,7 @@ BASEPATH=$PWD
 
 echo $BASEPATH
 
-curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 
 sudo apt-get update
 sudo apt-get install -y nodejs build-essential mongodb nginx git fcgiwrap libkrb5-dev
@@ -30,7 +30,7 @@ sudo git config http.receivepack true
 sudo git config receive.denynonfastforwards false
 
 mkdir $BASEPATH/git-master
-cp -R $BASEPATH/initialGit-Ruby/* $BASEPATH/git-master/
+cp -R $BASEPATH/initialGit-JavaScript/* $BASEPATH/git-master/
 
 cd $BASEPATH/git-master
 git init

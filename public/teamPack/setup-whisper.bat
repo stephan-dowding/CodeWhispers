@@ -15,4 +15,5 @@ if "%2" == "" goto doit
   cd %1
   git checkout -b %1
   git push -u origin %1
+  npm install
   echo "All Done!"

@@ -13,4 +13,5 @@ git push -u origin $1
 
 chmod 777 reconnect.sh
 
+npm install
 echo "All Done!"

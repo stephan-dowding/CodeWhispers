@@ -32,6 +32,7 @@ sudo git config receive.denynonfastforwards false
 cp -R $BASEPATH/initialGit-JavaScript $BASEPATH/git-master
 
 cd $BASEPATH/git-master
+chmod 777 reconnect.sh
 git init
 git remote add origin http://localhost/git/whisper.git
 git add --all

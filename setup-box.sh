@@ -29,8 +29,7 @@ cd /srv/git/whisper.git
 sudo git config http.receivepack true
 sudo git config receive.denynonfastforwards false
 
-mkdir $BASEPATH/git-master
-cp -R $BASEPATH/initialGit-JavaScript/* $BASEPATH/git-master/
+cp -R $BASEPATH/initialGit-JavaScript $BASEPATH/git-master
 
 cd $BASEPATH/git-master
 git init

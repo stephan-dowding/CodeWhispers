@@ -10,7 +10,7 @@ const doChallenge = async function(){
   sendAnswer(answer)
 }
 
-const CODE_WHISPER_HOST = "192.168.33.10"
+const CODE_WHISPER_HOST = "codewhispers.org"
 const getQuestion = async function(){
   const uri = `http://${CODE_WHISPER_HOST}/challenge/question/${git_branch}`
 

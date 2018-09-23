@@ -15,7 +15,7 @@ end
 
 
 
-CODE_WHISPER_HOST = "192.168.33.10"
+CODE_WHISPER_HOST = "codewhispers.org"
 def getQuestion
   uri = URI("http://#{CODE_WHISPER_HOST}/challenge/question/#{@git_branch}")
   JSON.parse(Net::HTTP.get(uri))

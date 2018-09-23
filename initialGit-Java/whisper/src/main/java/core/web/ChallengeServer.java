@@ -22,7 +22,7 @@ public class ChallengeServer {
 
     private static HttpClient httpClient = HttpClientBuilder.create().build();
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-    private static final String CODE_WHISPER_HOST = "192.168.33.10";
+    private static final String CODE_WHISPER_HOST = "codewhispers.org";
 
     public static JsonObject getQuestion() throws Exception {
         HttpGet get = new HttpGet(String.format("http://"+ CODE_WHISPER_HOST +"/challenge/question/%s", Util.branchName()));

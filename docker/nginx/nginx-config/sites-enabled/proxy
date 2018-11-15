@@ -1,0 +1,9 @@
+server {
+    listen  0.0.0.0:80;
+    listen [::]:80;
+    server_name  _;
+
+    location /git/whisper.git {
+      proxy_pass http://git/repo.git;
+    }
+}

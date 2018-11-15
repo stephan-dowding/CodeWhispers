@@ -15,7 +15,7 @@ RUN set -x && \
   ln -sf /dev/stdout /var/log/nginx/access.log          &&  \
   ln -sf /dev/stderr /var/log/nginx/error.log
 
-COPY ./nginx /etc/nginx
+COPY ./nginx-config /etc/nginx
 COPY ./entrypoint.sh /usr/local/bin/entrypoint
 
 ENTRYPOINT [ "entrypoint" ]

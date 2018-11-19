@@ -2,11 +2,17 @@ version: '3'
 services:
   git:
     build: ./git-simple-http
-  ngnix:
+  nginx:
     build: ./nginx
-    links:
-    - git
     ports:
     - "8888:80"
-volumes:
-  logvolume01: {}
+    depends_on:
+    - git
+    - whisper
+  mongo:
+    image: mongo
+  whisper:
+    build: ..
+    depends_on:
+    - mongo
+    - git

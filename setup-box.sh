@@ -17,7 +17,7 @@ sudo ln -s /etc/nginx/sites-available/whisper /etc/nginx/sites-enabled/whisper
 
 sudo service nginx restart
 
-git config --global user.email "whisper@mailinator.com"
+git config --global user.email "whisper@codewhispers.org"
 git config --global user.name "whisper"
 git config --global push.default simple
 

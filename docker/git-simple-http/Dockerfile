@@ -17,5 +17,6 @@ RUN set -x && \
 
 COPY ./nginx-config /etc/nginx
 COPY ./entrypoint.sh /usr/local/bin/entrypoint
+COPY ./git-hooks /var/lib/git/repo.git/hooks
 
 ENTRYPOINT [ "entrypoint" ]

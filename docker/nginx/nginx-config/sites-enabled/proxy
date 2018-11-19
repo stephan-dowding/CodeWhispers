@@ -6,4 +6,10 @@ server {
     location /git/whisper.git {
       proxy_pass http://git/repo.git;
     }
+    
+  	location / {
+  		proxy_set_header Upgrade $http_upgrade;
+  		proxy_set_header Connection "upgrade";
+  		proxy_pass http://whisper:3000;
+  	}
 }

@@ -78,6 +78,10 @@ let cleanBranches = function(rawBranches) {
 
 exports.add = function(req, res) {
   let name = req.params['team'];
+  if (name === "master") {
+    res.status(200).send();
+    return;
+  }
   ensureExists([name])
   .then(() => {
     io.emit('new team', name);

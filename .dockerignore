@@ -1,0 +1,5 @@
+docker/
+git*/
+nginx/
+node_modules/
+test/

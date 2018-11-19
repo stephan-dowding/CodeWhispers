@@ -3,11 +3,6 @@ server {
 	listen 80         default_server;
 	listen [::]:80    default_server;
 
-  location /ping {
-      add_header Content-Type text/plain;
-      return 200 'pong';
-  }
-
   location ~ ^.*\.git/objects/([0-9a-f]+/[0-9a-f]+|pack/pack-[0-9a-f]+.(pack|idx))$ {
     root            /var/lib/git;
   }
@@ -21,9 +16,4 @@ server {
     fastcgi_param   REMOTE_USER $remote_user;
     fastcgi_pass    unix:/var/run/fcgiwrap.socket;
   }
-
-	location / {
-		try_files       $uri $uri/ =404;
-	}
 }
-

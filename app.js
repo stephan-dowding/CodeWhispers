@@ -21,7 +21,7 @@ app.use(require("connect-assets")({
   paths: ['assets/css', 'assets/js', 'assets/img'],
   fingerprinting: false
 }));
-
+app.get('/setup-whisper.sh', routes.setupScript)
 app.get('/dashboard', routes.dashboard);
 app.get('/control-panel', routes.controlPanel);
 app.get('/', routes.whisper);

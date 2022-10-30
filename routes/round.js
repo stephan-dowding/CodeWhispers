@@ -41,7 +41,7 @@ let setRound = function(number) {
 let getRound = function() {
   let roundCollection = connection.collection('round');
   return roundCollection.findOne({})
-    .then((doc) => doc.round);
+    .then((doc) => (doc || { round: 0}).round);
 };
 
 exports.getRound = getRound;

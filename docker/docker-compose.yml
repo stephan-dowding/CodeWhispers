@@ -13,6 +13,8 @@ services:
     image: mongo
   whisper:
     build: ..
+    environment:
+      PUBLIC_HOSTNAME: "${PUBLIC_HOSTNAME}"
     depends_on:
     - mongo
     - git

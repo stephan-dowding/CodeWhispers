@@ -1,6 +1,5 @@
 #!/bin/sh
 
-npm install
 mkdir git-master
 cp -R ./initialGit-JavaScript/. ./git-master
 cd git-master

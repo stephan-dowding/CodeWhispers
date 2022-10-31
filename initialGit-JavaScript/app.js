@@ -1,6 +1,7 @@
 import {exec} from 'child_process'
 import rp from 'request-promise'
 import whisper from './whisper'
+import CODE_WHISPER_HOST from './host'
 
 let git_branch
 
@@ -10,7 +11,6 @@ const doChallenge = async function(){
   sendAnswer(answer)
 }
 
-const CODE_WHISPER_HOST = "codewhispers.org"
 const getQuestion = async function(){
   const uri = `http://${CODE_WHISPER_HOST}/challenge/question/${git_branch}`
 

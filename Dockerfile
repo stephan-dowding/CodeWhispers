@@ -2,6 +2,7 @@ FROM node:alpine
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
+RUN npm install
 RUN apk add git  && \
 git config --global user.email "whisper@codewhispers.org"  && \
 git config --global user.name "whisper"  && \

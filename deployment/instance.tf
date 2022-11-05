@@ -20,7 +20,7 @@ resource "aws_instance" "app" {
 
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.app.id]
-  user_data                   = file("${path.module}/instance_user_data.sh")
+  user_data                   = templatefile("${path.module}/instance_user_data.sh",{public_hostname: var.public_hostname})
   user_data_replace_on_change = true
   tags = {
     Name = "CodeWhispers"

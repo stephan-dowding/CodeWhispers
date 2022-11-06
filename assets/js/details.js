@@ -28,14 +28,24 @@ $(function() {
     return results;
   };
   addTeam = function(item) {
-    var i, j, ref, row;
+    var i, j, ref, row, commitNumberText;
     row = $("<tr id='team-" + item.name + "'>");
     row.append("<td>" + item.name + "</td>");
     for (i = j = 0, ref = currentRound; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
       if (!item[i]) {
         item[i] = 'failure';
       }
-      row.append("<td id='info-" + item.name + "-" + i + "'><img id='status-" + item.name + "-" + i + "' src='/assets/" + item[i] + ".png' height='25' width='25' /></td>");
+      if (item.commits && item.commits[i] > 0) {
+        commitNumberText = item.commits[i]
+      } else {
+        commitNumberText = ""
+      }
+      itemHtml = ""
+      itemHtml += "<td class='info' id='info-" + item.name + "-" + i + "'>";
+      itemHtml += "  <img id='status-" + item.name + "-" + i + "' src='/assets/" + item[i] + ".png' height='25' width='25'/>";
+      itemHtml += "<div class='commit-number'>"+commitNumberText+"</div>"; // TODO update this on websocket
+      itemHtml += "</td>";
+      row.append(itemHtml)
     }
     return table.append(row);
   };
@@ -86,6 +96,11 @@ $(function() {
       teams.splice(index, 1);
     }
     return $("#team-" + teamName).remove();
+  });
+
+  teamSocket.on('commits updated', function (data) {
+    debugger
+    $("#info-" + data.team + "-" + data.round+" .commit-number").text(data.numberOfCommits)
   });
   challengeSocket = io.connect('/challenge');
   challengeSocket.on('result', function(data) {

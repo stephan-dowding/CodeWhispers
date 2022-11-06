@@ -1,0 +1,20 @@
+#!/bin/bash
+
+while read oldrev newrev ref
+do
+  if [ "${oldrev}" == "0000000000000000000000000000000000000000" ]; then
+    echo "Created new team, don't neeed new commits here"
+    exit 0
+  fi
+
+  if [ "$refname" != "refs/heads/master" ] && [[ "$ref" =~ ^refs/heads/([a-zA-Z0-9_-]+)$ ]]; then
+    count=$(git rev-list --count ${oldrev}..${newrev})
+    team="${BASH_REMATCH[1]}"
+    echo "*** Team ${team} pushed ${count} commits"
+    wget --method=POST -bqO- "http://whisper:3000/teams/${team}/commits?added=${count}"
+  else
+    echo "Ignoring this branch for commit counting" >&2
+    exit 0
+  fi
+done
+

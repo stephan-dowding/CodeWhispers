@@ -1,88 +1,51 @@
-Build Status: [![Build Status](https://snap-ci.com/stephan-dowding/CodeWhispers/branch/master/build_image)](https://snap-ci.com/stephan-dowding/CodeWhispers/branch/master)
+# CodeWhispers
+Supporting server and material for running a CodeWhispers session
 
-# Setup the server
-`vagrant up`
+## Usage
+### Prerequisites
 
-# Bootstrap script for ubuntu box
-`setup-box.sh`
+- Docker and Docker Compose (to run locally)
+- AWS Account and Terraform (to deploy to cloud)
 
-# Dashboard to project on big screen
-`192.168.33.10/dashboard`
+### Running locally
 
-# Admin console to move the rounds
-`192.168.33.10/control-panel`
-
-
-# The Git magic:
-
-Each team will have it's own branch.. Let's say they are `$one` and `$two`.
-
-set them up on the machine by,
-```sh
-git clone ...
-git checkout -b $one
-git push -u origin $one
-
-# Same for $two
+```bash
+$ cd docker
+$ PUBLIC_HOSTNAME="localhost:8888" docker-compose up --build
 ```
 
-## From our master repo:
+### Deploy on AWS
+(after PR #21 is merged)
 
-```sh
-# delete local branches
-git checkout master
-git branch -d $one
-git branch -d $two
-
-# get latest
-git pull
-
-# get all branches
-git checkout $one
-git checkout $two
-
-# don't move things from under your feet!
-git checkout master
-
-# delete remote branches
-git push origin ":${one}"
-git push origin ":${two}"
-
-# rename local branches (I'm not using "temp" as I don't want to force myself to cycle)
-git branch -m $one "t--${one}"
-git branch -m $two "t--${two}"
-git branch -m "t--${one}" $two
-git branch -m "t--${two}" $one
-
-# push and reconnect
-git checkout $one
-git push -u origin $one
-
-git checkout $two
-git push -u origin $two
-
-git checkout master
+```bash
+$ cd deployment
+$ terraform init
+$ terraform apply 
 ```
 
-## Back on the user machine:
+### Endpoints
 
-```sh
-git fetch
-git reset --hard origin/$one
+- `/dashboard`: Shows the instructions for the current round and a status across all participants
+- `/control-panel`: For facilitators to advance everyone to the next round. Updates the instructions and swaps code between participants
 
-# Same for $two
+### How to run a CodeWhispers workshop
+
+- Assemble a group of people, each of them (or each pair), with a machine to work on
+- Have the dashboard up on a big screen or projector to keep track
+- Direct participants towards the dashboard URL and have them follow the instructions to set up their machine
+- Once everyone has completed a round (as indicated by the green ticks on the dashboard), use the control-panel to advance to the next round
+- Have all participants use the `./reconnect.sh` script to get a new codebase to work on for the next round
+
+## Development
+
+### Prerequisites
+
+- Node, NPM
+- MongoDB
+
+### Set Up
+
 ```
-
-# SETUP for git repo
-* In bare host repo add magic `git-daemon-export-ok` file
-* run git daemon (we don't care about authenticated checkins so this is ok)
-
-```sh
-git daemon --enable=receive-pack --interpolated-path=$path_to_repo
-git clone git://$host/ cloneName
+$ npm install
+$ npm test
 ```
-
-
-# CodeWhispers meta development
-* run `vagrant up` and make sure the round 0 is running at: `192.168.33.10`
-* run tests with `./node_modules/.bin/mocha -u exports test/`

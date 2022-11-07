@@ -49,3 +49,15 @@ $ terraform apply
 $ npm install
 $ npm test
 ```
+
+### Start MongoDB
+
+```
+$ docker run -d -p 27017:27017 mongo
+```
+
+### Run Dev Server
+
+```
+$ npm start
+```

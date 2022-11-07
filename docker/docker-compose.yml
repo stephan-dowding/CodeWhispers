@@ -15,6 +15,7 @@ services:
     build: ..
     environment:
       PUBLIC_HOSTNAME: "${PUBLIC_HOSTNAME}"
+      MONGO_DB_URL: "mongodb://mongo:27017/CodeWhispers"
     depends_on:
     - mongo
     - git

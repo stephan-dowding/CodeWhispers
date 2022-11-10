@@ -1,5 +1,7 @@
 import whisper from './whisper'
 
-test('adds 1 + 2 to equal 3', () => {
-  expect(whisper({start:1})).toStrictEqual({end:1});
+describe('round 0', () => {
+  it('should return the end position as start position', () => {
+    expect(whisper({start:1})).toStrictEqual({end:1});
+  });
 });

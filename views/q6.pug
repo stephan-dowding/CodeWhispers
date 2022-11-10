@@ -4,6 +4,7 @@ p Hmm, we feel that we want better data about who has the treasure at the end.
 
 p In light of this, we will no longer take in the #[code treasureFound] or #[code treasureStolen] attributes in the answer, but expect a #[code treasureOwner] attribute instead!
 
+h3 IMPORTANT: Before staring, don't forget to run #[code #{"./reconnect.sh"}] to pull the latest code from server
 
 p The question server will provide:
   pre
@@ -28,3 +29,5 @@ p The answer will expect:
         endY: ~integer~
         treasureOwner: "no-one" | "me" | "pirate" | "spy"
       }
+
+h3 IMPORTANT: When you have completed this round, don't forget to run #[code #{"git push"}]

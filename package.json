@@ -11,7 +11,7 @@
     "connect-assets": "^6.0.1",
     "express": "^4.17.1",
     "mongodb": "^3.3.2",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {

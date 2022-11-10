@@ -6,3 +6,7 @@ initialGit/out/
 .vagrant/
 builtAssets/
 *.log
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars

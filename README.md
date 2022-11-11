@@ -1,5 +1,8 @@
 # CodeWhispers
-Supporting server and material for running a CodeWhispers session
+
+CodeWhispers is a fun coding exercise where participants complete rounds of coding challenges. The twist is: after each round, the code created will be moved to another participant, so you have to keep building up functionality on someone else's code. The questions are: to refactor or not refactor?, to test or not to test?
+
+CodeWhispers consists of a server which manages participants, rounds, swap code repos and validate the answers.
 
 ## Usage
 ### Prerequisites

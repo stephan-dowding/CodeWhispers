@@ -39,6 +39,13 @@ let getBranches = function() {
   return branchesCollection.find().toArray();
 };
 
+let getBranch = function(name) {
+  let branchesCollection = connection.collection('branches');
+  return branchesCollection.findOne({
+    name: name
+  })
+}
+
 exports.rescan = function() {
   return swapper.getBranchList((branches) =>
     ensureExists(branches)
@@ -50,13 +57,12 @@ let ensureExists = function(branches) {
   if (branches.length === 0) return Promise.resolve();
 
   let branchesCollection = connection.collection('branches');
-  return branchesCollection.findOne({
-    name: branches[0]
-  })
+  return getBranch(branches[0])
   .then((doc) => {
     if (!doc) {
       branchesCollection.save({
-        name: branches[0]
+        name: branches[0],
+        commits: {}
       }, {
         safe: true
       });
@@ -89,6 +95,27 @@ exports.add = function(req, res) {
   })
   .catch((error) => res.status(500).json(error));
 };
+
+exports.addCommits = function(req,res) {
+  let name = req.params['team'];
+  let numberOfNewCommits = Number(req.query['added'])
+  if (name === "master") {
+    res.status(200).send();
+    return;
+  }
+  Promise
+      .all([round.getRound(), getBranch(name)])
+      .then(([round, branch]) => {
+        let numberOfCommits = (branch.commits[round] || 0) + numberOfNewCommits;
+        branch.commits[round] = numberOfCommits
+        let branchesCollection = connection.collection('branches');
+        branchesCollection.save(branch, {safe: true});
+
+        io.emit('commits updated', {team: name, round: round, numberOfCommits: numberOfCommits})
+        res.send(200)
+      })
+      .catch((error) => res.status(500).json(error));
+}
 
 exports.remove = function(req, res) {
   let name = req.params['team'];

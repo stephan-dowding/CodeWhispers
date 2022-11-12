@@ -37,6 +37,7 @@ app.get('/challenge/question/:team', challenge.question);
 app.post('/challenge/answer/:team', challenge.answer);
 
 app.put('/teams/:team', branch.add);
+app.post('/teams/:team/commits', branch.addCommits);
 app.delete('/teams/:team', branch.remove);
 
 require('./routes/connection').init()

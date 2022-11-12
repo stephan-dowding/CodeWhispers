@@ -9,3 +9,14 @@ a {
 
 .leftPane      { width: 50%; float: left; }
 .rightPane { width: 50%; float: right; }
+
+.info {
+  position: relative;
+}
+
+.commit-number {
+  position: absolute;
+  top: 20%;
+  left: 35%;
+  color: white;
+}

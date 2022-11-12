@@ -18,7 +18,6 @@ $ PUBLIC_HOSTNAME="localhost:8888" docker-compose up --build
 ```
 
 ### Deploy on AWS
-(after PR #21 is merged)
 
 ```bash
 $ cd deployment

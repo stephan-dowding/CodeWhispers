@@ -13,8 +13,8 @@ systemctl start docker
 git clone https://github.com/stephan-dowding/CodeWhispers.git
 cd CodeWhispers/docker
 
-if [ "${public_hostname}" == "" ]; then 
-  PUBLIC_HOSTNAME="$(curl -4 ifconfig.co):8888" docker-compose up
+if [ "${public_hostname}" == "" ]; then
+  PUBLIC_HOSTNAME="$(curl -4 ifconfig.co)" docker-compose up
 else
-  PUBLIC_HOSTNAME="${public_hostname}:8888" docker-compose up
+  PUBLIC_HOSTNAME="${public_hostname}" PORT=80 docker-compose up
 fi

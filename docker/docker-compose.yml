@@ -5,7 +5,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-    - "8888:80"
+    - "${PORT:-8888}:80"
     depends_on:
     - git
     - whisper

@@ -19,7 +19,7 @@
     "babel-preset-env": "^1.7.0",
     "chai": "^4.2.0",
     "chai-things": "^0.2.0",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "mockery": "^2.1.0"
   },
   "babel": {
